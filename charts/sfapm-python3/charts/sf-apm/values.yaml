@@ -1,0 +1,359 @@
+# Default values for sfapm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# set to true to enable debug logs on
+# apm and vizbuilder
+enableDebug: false
+archiverEnabled: true
+nameOverride: ""
+fullnameOverride: ""
+imagePullSecrets: []
+
+podSecurityContext:
+  {}
+
+podAnnotations:
+  prometheus.io/scrape: "false"
+  
+sidecarLogger:
+  enabled: true
+
+  image:
+    repository: busybox
+    tag: latest
+    pullPolicy: Always
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 10Mi
+    limits:
+      cpu: 50m
+      memory: 50Mi
+
+mappingUpdator:
+  enabled: true
+
+  image:
+    repository: snappyflowml/plugin-mapping-updator
+    tag: 0.1.1
+    pullPolicy: Always
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 10Mi
+    limits:
+      cpu: 50m
+      memory: 50Mi
+
+sfapm:
+  replicaCount: 2
+
+  cloud: ""
+
+  ingress:
+    enabled: false
+    es_user: ""
+    es_http: "http"
+    es_host: ""
+    es_pass: ""
+    es_port: ""
+    es_operating_mode: ""
+    kafka_api: ""
+    arhiver_url: ""
+    kafka_user: ""
+    kafka_pwd: ""
+  azure:
+    storage_account_name: ""
+    storage_account_key: ""
+
+
+  quotasEnabled: false
+  rollover:
+    custom_config: false
+    metric:
+      rollover_max_age: 10d
+      rollover_max_docs: "None"
+      rollover_max_size: 30gb
+    log:
+      rollover_max_age: 10d
+      rollover_max_docs: "None"
+      rollover_max_size: 30gb
+    trace:
+      rollover_max_age: 1d
+      rollover_max_docs: "None"
+      rollover_max_size: 30gb
+    rum:
+      rollover_max_age: 1d
+      rollover_max_docs: "None"
+      rollover_max_size: 30gb
+    profile:
+      rollover_max_age: 1d
+      rollover_max_docs: "None"
+      rollover_max_size: 30gb
+    control:
+      rollover_max_age: 1d
+      rollover_max_docs: "None"
+      rollover_max_size: 30gb
+
+  serverid: ""
+
+  switchOffPrestoCoord: "true"
+
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 3
+    # Below values are based on requests.
+    # Hence value > 100 needs to be calculated based on set limits
+    # Below values are calculated such that (limit / request) * 80 -> for 80% target utilization
+    targetCPUUtilizationPercentage: 1600
+    targetMemoryUtilizationPercentage: 120
+
+  image:
+    repository: snappyflowml/sfapm-server
+    tag: 4.0.421-python3
+    pullPolicy: IfNotPresent
+
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 768Mi
+    requests:
+      cpu: 50m
+      memory: 512Mi
+
+  service:
+    type: ClusterIP
+    port: 8000
+
+sfapm_celery:
+  env:
+    C_FORCE_ROOT: true
+    CELERY_OPTS: "-O fair --max-tasks-per-child 20 -P gevent"
+
+  beat:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+    command: "celery -A snappyflow beat -l $LOG_LEVEL"
+
+  default:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+    replicaCount: 1
+    command: "celery -A snappyflow worker -l $LOG_LEVEL -Q default -c10 $CELERY_OPTS"
+
+  notify:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+    replicaCount: 1
+    command: "celery -A snappyflow worker -l $LOG_LEVEL -Q notify -c20 $CELERY_OPTS"
+
+  periodic:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+    replicaCount: 3
+    autoscaling:
+      enabled: true
+      minReplicas: 3
+      maxReplicas: 6
+      targetCPUUtilizationPercentage: 8000
+      targetMemoryUtilizationPercentage: 410
+    command: "celery -A snappyflow worker -l $LOG_LEVEL -Q periodic -c5 $CELERY_OPTS"
+
+  provision:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+    replicaCount: 1
+    command: "celery -A snappyflow worker -l $LOG_LEVEL -Q provision -c1 $CELERY_OPTS"
+	
+sfapmaffinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: "role"
+                operator: In
+                values:
+                  - server
+          topologyKey: "kubernetes.io/hostname"
+
+# set this to true/True if using pg bouncer
+disable_server_side_cursors: false
+
+postgresql:
+  # enabled true deploys postgresql as statefull set on the same cluster
+  enabled: true
+
+  # if enabled false, chart will connect to external database
+  # create two data bases with names snappyflow and vizbuilder
+  # create a user and grant access to database snappyflow and vizbuilder
+  # provide external section if enabled is false
+
+  external:
+    dbHost: ""
+    dbPort: ""
+    dbUser: ""
+    dbPassword: ""
+
+  image:
+    repository: postgres
+    pullPolicy: IfNotPresent
+    tag: "9.6"
+
+  # when local postgresql is enabled below values are used to configure database
+  rootPassword: postgres
+  rootUser: postgres
+  multidb: snappyflow;vizbuilder;commands;elasticsearch_manager
+  multidbUser: snappyflow
+  multidbUserPassord: maplelabs
+  
+redis:
+  image:
+    repository: redis
+    pullPolicy: IfNotPresent
+    tag: "5.0"
+
+
+securityContext:
+  {}
+  
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+  
+vizbuilder:
+  service:
+    type: ClusterIP
+    port: 8000
+	
+commands:
+  service:
+    type: ClusterIP
+    port: 8000
+
+esmanager:
+  service:
+    type: ClusterIP
+    port: 8000
+
+# User Management and Identity management system
+keycloak:
+  # enabled true for keycloak server
+  # false for django internal db for user management
+  enabled: false
+  serverIP: "" # eg: https://IP:port/auth/
+  user: "" # admin user email ID
+  password: "" # admin user password
+  realm: ""
+  clientid: ""
+  clientkey: "" # keycloak admin client key
+  publickey: "" # keycloak public key
+  supportemail: "" # support emailid where upgrade request sent
+  websiteurl: "" # websiteURL
+  defaultprofile: "demo-profile" # default profile for demo apps
+
+# Google client configuration
+google_client_id: ""
+google_client_secret: ""
+google_callback_url: "/portal/gauth"
+
+# Usage management system
+usage_system:
+  # Usage system host IP/Domain
+  enabled: false
+  host: ""
+  # Port number for usage system server
+  port: 443
+  # tls true for HTTPS
+  tls: False
+
+# Ingest Usage system
+ingest_usage_system:
+  # Usage system host IP/Domain
+  enabled: false
+  host: ""
+  # Port number for usage system server
+  port: 443
+  # tls true for HTTPS
+  tls: False
+
+# pprof-server config
+pprof:
+  service:
+    type: ClusterIP
+    port: 8090
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+  # The names of the image pull secrets to be attached to this service account
+  imagePullSecrets: []
+  # disable mounting sa token inside pods
+  automountServiceAccountToken: false
+  
+cloud:
+  aws:
+    enable: true
+  gcs:
+    enable: false
+    # Set all of the below entities when Google-Service-Account is being used. Recommended approach unless K8s is running outside GCP (K8s outside GCP flow which will use JSON service-account-keys is not yet implemented)
+    use_google_service_account: true
+    service_account: "XXXX-compute@developer.gserviceaccount.com OR XXXX@XXXX.iam.gserviceaccount.com"
+    region: us-west1
+    zone: us-west1-c
+  datacenter:
+    enable: false
+
+global:
+  sfappname: sf-portal-app
+  sfprojectname: snappyflow-app
+  sfappname_key: snappyflow/appname
+  sfprojectname_key: snappyflow/projectname
+  nginx_geo_info_collection: true
+  nginx_ua_parsing: true
+  enable_sftrace: false
+  key: ""
+
+  sfNodeManager:
+    enabled: false
+    priorityClassName: sf-critical-pod
+  sfScheduler:
+    enabled: false
+    schedulerName: sf-scheduler
