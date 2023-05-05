@@ -3,6 +3,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ include "postgresql.fullname" . }}
+  annotations:
+    "helm.sh/resource-policy": keep
   labels:
     {{- include "postgresql.labels" . | nindent 4 }}
 spec:
