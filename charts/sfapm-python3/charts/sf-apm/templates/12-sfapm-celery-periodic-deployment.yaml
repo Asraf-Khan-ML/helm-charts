@@ -138,7 +138,7 @@ spec:
               mountPath: /var/log/snappyflow/
         {{- if .Values.sidecarLogger.enabled }}
         - name: apm-performance-logger
-          image:  "{{ .Values.sidecarLogger.image.repository }}:{{ .Values.sidecarLogger.image.tag }}"
+          image:  "busybox:latest"
           imagePullPolicy: {{ .Values.sidecarLogger.image.pullPolicy | quote }}
           args: [/bin/sh, -c, 'tail -n+1 -F /var/log/snappyflow/apm-performance.log']
           resources:

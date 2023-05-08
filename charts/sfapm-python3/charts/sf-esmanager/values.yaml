@@ -11,8 +11,6 @@ sidecarLogger:
   enabled: true
 
   image:
-    repository: busybox
-    tag: latest
     pullPolicy: Always
 
   resources:

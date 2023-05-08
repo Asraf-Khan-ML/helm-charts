@@ -78,8 +78,6 @@ sftrace:
   sftraceServerPrometheusExporter:
     metricsInterval: 3
     image:
-      repository: snappyflowml/sftrace-server-prometheus-exporter
-      tag: latest
       pullPolicy: Always
     resources:
       requests:
@@ -92,8 +90,6 @@ sftrace:
     prometheus.io/scrape: "true"
 
   image:
-    repository: snappyflowml/sftrace-server
-    tag: latest
     pullPolicy: Always
   
   resources:

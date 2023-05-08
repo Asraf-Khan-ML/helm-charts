@@ -157,7 +157,7 @@ spec:
             {{- end }}
         {{- if .Values.sidecarLogger.enabled }}
         - name: application-logger
-          image:  "{{ .Values.sidecarLogger.image.repository }}:{{ .Values.sidecarLogger.image.tag }}"
+          image:  "busybox:latest"
           imagePullPolicy: {{ .Values.sidecarLogger.image.pullPolicy | quote }}
           args: [/bin/sh, -c, 'tail -n+1 -F /app/log/commands.log']
           resources:

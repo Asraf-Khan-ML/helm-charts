@@ -52,7 +52,7 @@ spec:
             defaultMode: 0600
       containers:
       - name: sftrace-server
-        image: "{{ .Values.sftrace.image.repository }}:{{ .Values.sftrace.image.tag }}"
+        image: "snappyflowml/sftrace-server:latest"
         imagePullPolicy: {{ .Values.sftrace.image.pullPolicy }}
         ports:
           - name: http
@@ -84,7 +84,7 @@ spec:
             readOnly: true
       - name: sftrace-server-prometheus-exporter
         command: [/go/metrics]
-        image: "{{ .Values.sftrace.sftraceServerPrometheusExporter.image.repository }}:{{ .Values.sftrace.sftraceServerPrometheusExporter.image.tag }}" 
+        image: "snappyflowml/sftrace-server-prometheus-exporter:latest" 
         imagePullPolicy: Always
         env:
         - name: Metrics_Interval
