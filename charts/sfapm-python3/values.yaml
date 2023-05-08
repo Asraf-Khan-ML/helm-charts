@@ -105,6 +105,11 @@ postgresql:
   multidbUser: snappyflow
   multidbUserPassord: maplelabs
 
+sfapmui:
+  service:
+    type: NodePort # this is the entrypoint change to Loadbalancer
+    nodePort: 30080
+
 global:
   sfappname: sf-portal-app
   sfprojectname: snappyflow-app

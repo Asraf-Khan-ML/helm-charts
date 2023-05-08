@@ -105,7 +105,7 @@ commands_celery:
         memory: 100Mi
     replicaCount: 1
     command: "celery -A command_server worker -l $LOG_LEVEL -Q default -c10 $CELERY_OPTS"
-	
+
 postgresql:
   # enabled true deploys postgresql as statefull set on the same cluster
   enabled: true
@@ -148,12 +148,24 @@ sfapm:
   service:
     type: ClusterIP
     port: 8000
+
+  replicaCount: 2
+
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 3
+    # Below values are based on requests.
+    # Hence value > 100 needs to be calculated based on set limits
+    # Below values are calculated such that (limit / request) * 80 -> for 80% target utilization
+    targetCPUUtilizationPercentage: 1600
+    targetMemoryUtilizationPercentage: 120
   
 vizbuilder:
   service:
     type: ClusterIP
     port: 8000
-	
+
 sfapm_celery:
   env:
     C_FORCE_ROOT: true
@@ -192,20 +204,6 @@ sfapmaffinity:
                 values:
                   - server
           topologyKey: "kubernetes.io/hostname"
-		  
-sfapm:
-  replicaCount: 2
-
-  autoscaling:
-    enabled: true
-    minReplicas: 2
-    maxReplicas: 3
-    # Below values are based on requests.
-    # Hence value > 100 needs to be calculated based on set limits
-    # Below values are calculated such that (limit / request) * 80 -> for 80% target utilization
-    targetCPUUtilizationPercentage: 1600
-    targetMemoryUtilizationPercentage: 120
-
 
 podSecurityContext:
   {}

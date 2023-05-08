@@ -96,7 +96,7 @@ vizbuilder:
   service:
     type: ClusterIP
     port: 8000
-	
+
 commands:
   service:
     type: ClusterIP
@@ -109,7 +109,7 @@ esmanager:
 
 podAnnotations:
   prometheus.io/scrape: "false"
-	
+
 global:
   sfappname: sf-portal-app
   sfprojectname: snappyflow-app

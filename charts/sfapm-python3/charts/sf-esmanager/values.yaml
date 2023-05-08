@@ -1,18 +1,15 @@
+---
 enableDebug: false
 archiverEnabled: true
 nameOverride: ""
 fullnameOverride: ""
 imagePullSecrets: []
-
 podAnnotations:
   prometheus.io/scrape: "false"
-
 sidecarLogger:
   enabled: true
-
   image:
     pullPolicy: Always
-
   resources:
     requests:
       cpu: 10m
@@ -20,78 +17,53 @@ sidecarLogger:
     limits:
       cpu: 50m
       memory: 50Mi
-
 serviceAccount:
-  # Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
   name: ""
-  # The names of the image pull secrets to be attached to this service account
   imagePullSecrets: []
-  # disable mounting sa token inside pods
   automountServiceAccountToken: false
-  
 cloud:
   aws:
     enable: true
   gcs:
     enable: false
-    # Set all of the below entities when Google-Service-Account is being used. Recommended approach unless K8s is running outside GCP (K8s outside GCP flow which will use JSON service-account-keys is not yet implemented)
     use_google_service_account: true
-    service_account: "XXXX-compute@developer.gserviceaccount.com OR XXXX@XXXX.iam.gserviceaccount.com"
+    service_account: XXXX-compute@developer.gserviceaccount.com OR
+      XXXX@XXXX.iam.gserviceaccount.com
     region: us-west1
     zone: us-west1-c
   datacenter:
     enable: false
-
-# set this to true/True if using pg bouncer
 disable_server_side_cursors: false
-
 postgresql:
-  # enabled true deploys postgresql as statefull set on the same cluster
   enabled: true
-
-  # if enabled false, chart will connect to external database
-  # create two data bases with names snappyflow and vizbuilder
-  # create a user and grant access to database snappyflow and vizbuilder
-  # provide external section if enabled is false
-
   external:
     dbHost: ""
     dbPort: ""
     dbUser: ""
     dbPassword: ""
-
   image:
     repository: postgres
     pullPolicy: IfNotPresent
     tag: "9.6"
-
-  # when local postgresql is enabled below values are used to configure database
   rootPassword: postgres
   rootUser: postgres
   multidb: snappyflow;vizbuilder;commands;elasticsearch_manager
   multidbUser: snappyflow
   multidbUserPassord: maplelabs
-
 redis:
   image:
     repository: redis
     pullPolicy: IfNotPresent
     tag: "5.0"
-
 sfapm:
   replicaCount: 2
-
   cloud: ""
-
   ingress:
     enabled: false
     es_user: ""
-    es_http: "http"
+    es_http: http
     es_host: ""
     es_pass: ""
     es_port: ""
@@ -103,48 +75,36 @@ sfapm:
   azure:
     storage_account_name: ""
     storage_account_key: ""
-	
-sfapm:
   service:
     type: ClusterIP
     port: 8000
-  
-vizbuilder:
-  service:
-    type: ClusterIP
-    port: 8000
-
-podSecurityContext:
-  {}
-  # fsGroup: 2000
-
-securityContext:
-  {}
-  
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-	
-esmanager:
-  replicaCount: 2
-
   autoscaling:
     enabled: true
     minReplicas: 2
     maxReplicas: 3
-    # Below values are based on requests.
-    # Hence value > 100 needs to be calculated based on set limits
-    # Below values are calculated such that (limit / request) * 80 -> for 80% target utilization
+    targetCPUUtilizationPercentage: 1600
+    targetMemoryUtilizationPercentage: 120
+vizbuilder:
+  service:
+    type: ClusterIP
+    port: 8000
+podSecurityContext: {}
+securityContext: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+esmanager:
+  replicaCount: 2
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 3
     targetCPUUtilizationPercentage: 8000
     targetMemoryUtilizationPercentage: 240
-
   image:
     repository: snappyflowml/sfapm-esmanager
     tag: 1.0.55
     pullPolicy: IfNotPresent
-
   resources:
     limits:
       cpu: 1000m
@@ -152,50 +112,27 @@ esmanager:
     requests:
       cpu: 100m
       memory: 256Mi
-
   service:
     type: ClusterIP
     port: 8000
-
-  # Movement to warm node happens based on below threshold & pre-requisites
   warm_movement_rules:
-    # Add all the threshold to trigger the warm movement in this section
-    # Add the rule name and condition under the rule as dict
-    # In the below, example, rule is "warm_disk_percentage" and the in-built supported conditions are:
-    # gt (greater than), lt (less than), eq (equals to), neq (not equals to) and bool (boolean)
-    # All accepts string and number input
-    # There is a logical OR between all the threshold rules
-    # i.e threshold is met if any one of the rule satisfies
     thresholds:
       - hot_disk_percentage:
           gt: 80
       - hot_store_to_heap:
           gt: 45
-    # Add all the prereqs rules under this section
-    # These rules are considered for eligibility check for the warm movement
-    # Rules are check only after any one of the threshold is met
-    # There is a logical AND among all the pre-req rules in one group
-    # i.e all rules should meet under one group to pass
-    # Custom configurations to decide the parameters related to hot-warm / hot-optimized cluster jobs
-    # e.g., maximum indices to backup, merge etc
-    prerequisties:
-      {}
-
-  # hot-warm / hot-optimized related variables
+    prerequisties: {}
   warm_allocated_freedisk_percent: 80
   min_warm_nodes: 2
   max_relocating_index: 2
   max_shrink_job: 2
   max_forcemerge_job: 2
-
-  # snapshot/restore related variables
   max_ongoing_backups: 3
   max_ongoing_restores: 3
-
 esmanager_celery:
   env:
     C_FORCE_ROOT: true
-    CELERY_OPTS: "-O fair --max-tasks-per-child 200 -P solo"
+    CELERY_OPTS: -O fair --max-tasks-per-child 200 -P solo
   beat:
     resources:
       limits:
@@ -204,8 +141,7 @@ esmanager_celery:
       requests:
         cpu: 100m
         memory: 100Mi
-    command: "celery -A elasticsearch_manager beat --scheduler django -l $LOG_LEVEL"
-
+    command: celery -A elasticsearch_manager beat --scheduler django -l $LOG_LEVEL
   default:
     resources:
       limits:
@@ -215,13 +151,12 @@ esmanager_celery:
         cpu: 100m
         memory: 100Mi
     replicaCount: 2
-    command: "celery -A elasticsearch_manager worker -l $LOG_LEVEL -Q es_mng_default  $CELERY_OPTS"
-
+    command: celery -A elasticsearch_manager worker -l $LOG_LEVEL -Q
+      es_mng_default  $CELERY_OPTS
 sfapm_celery:
   env:
     C_FORCE_ROOT: true
-    CELERY_OPTS: "-O fair --max-tasks-per-child 20 -P gevent"
-
+    CELERY_OPTS: -O fair --max-tasks-per-child 20 -P gevent
   beat:
     resources:
       limits:
@@ -230,8 +165,7 @@ sfapm_celery:
       requests:
         cpu: 10m
         memory: 100Mi
-    command: "celery -A snappyflow beat -l $LOG_LEVEL"
-
+    command: celery -A snappyflow beat -l $LOG_LEVEL
   default:
     resources:
       limits:
@@ -241,21 +175,7 @@ sfapm_celery:
         cpu: 10m
         memory: 100Mi
     replicaCount: 1
-    command: "celery -A snappyflow worker -l $LOG_LEVEL -Q default -c10 $CELERY_OPTS"
-
-sfapm:
-  replicaCount: 2
-
-  autoscaling:
-    enabled: true
-    minReplicas: 2
-    maxReplicas: 3
-    # Below values are based on requests.
-    # Hence value > 100 needs to be calculated based on set limits
-    # Below values are calculated such that (limit / request) * 80 -> for 80% target utilization
-    targetCPUUtilizationPercentage: 1600
-    targetMemoryUtilizationPercentage: 120
-
+    command: celery -A snappyflow worker -l $LOG_LEVEL -Q default -c10 $CELERY_OPTS
 sfapmaffinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
@@ -263,15 +183,11 @@ sfapmaffinity:
         podAffinityTerm:
           labelSelector:
             matchExpressions:
-              - key: "role"
+              - key: role
                 operator: In
                 values:
                   - server
-          topologyKey: "kubernetes.io/hostname"
-
-podAnnotations:
-  prometheus.io/scrape: "false"
-	
+          topologyKey: kubernetes.io/hostname
 global:
   sfappname: sf-portal-app
   sfprojectname: snappyflow-app
@@ -281,7 +197,6 @@ global:
   nginx_ua_parsing: true
   enable_sftrace: false
   key: ""
-
   sfNodeManager:
     enabled: false
     priorityClassName: sf-critical-pod
