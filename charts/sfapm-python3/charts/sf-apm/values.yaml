@@ -1,0 +1,271 @@
+---
+enableDebug: false
+archiverEnabled: true
+nameOverride: ""
+fullnameOverride: ""
+imagePullSecrets: []
+podSecurityContext: {}
+podAnnotations:
+  prometheus.io/scrape: "false"
+sidecarLogger:
+  enabled: true
+  image:
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 10m
+      memory: 10Mi
+    limits:
+      cpu: 50m
+      memory: 50Mi
+mappingUpdator:
+  enabled: true
+  image:
+    repository: snappyflowml/plugin-mapping-updator
+    tag: 0.1.1
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 10m
+      memory: 10Mi
+    limits:
+      cpu: 50m
+      memory: 50Mi
+sfapm:
+  replicaCount: 2
+  cloud: ""
+  ingress:
+    enabled: false
+    es_user: ""
+    es_http: http
+    es_host: ""
+    es_pass: ""
+    es_port: ""
+    es_operating_mode: ""
+    kafka_api: ""
+    arhiver_url: ""
+    kafka_user: ""
+    kafka_pwd: ""
+  azure:
+    storage_account_name: ""
+    storage_account_key: ""
+  quotasEnabled: false
+  rollover:
+    custom_config: false
+    metric:
+      rollover_max_age: 10d
+      rollover_max_docs: None
+      rollover_max_size: 30gb
+    log:
+      rollover_max_age: 10d
+      rollover_max_docs: None
+      rollover_max_size: 30gb
+    trace:
+      rollover_max_age: 1d
+      rollover_max_docs: None
+      rollover_max_size: 30gb
+    rum:
+      rollover_max_age: 1d
+      rollover_max_docs: None
+      rollover_max_size: 30gb
+    profile:
+      rollover_max_age: 1d
+      rollover_max_docs: None
+      rollover_max_size: 30gb
+    control:
+      rollover_max_age: 1d
+      rollover_max_docs: None
+      rollover_max_size: 30gb
+  serverid: ""
+  switchOffPrestoCoord: "true"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 1600
+    targetMemoryUtilizationPercentage: 120
+  image:
+    repository: snappyflowml/sfapm-server
+    tag: 4.0.421-python3
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 768Mi
+    requests:
+      cpu: 50m
+      memory: 512Mi
+  service:
+    type: ClusterIP
+    port: 8000
+sfapm_celery:
+  env:
+    C_FORCE_ROOT: true
+    CELERY_OPTS: -O fair --max-tasks-per-child 20 -P gevent
+  beat:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+    command: celery -A snappyflow beat -l $LOG_LEVEL
+  default:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+    replicaCount: 1
+    command: celery -A snappyflow worker -l $LOG_LEVEL -Q default -c10 $CELERY_OPTS
+  notify:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+    replicaCount: 1
+    command: celery -A snappyflow worker -l $LOG_LEVEL -Q notify -c20 $CELERY_OPTS
+  periodic:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+    replicaCount: 3
+    autoscaling:
+      enabled: true
+      minReplicas: 3
+      maxReplicas: 6
+      targetCPUUtilizationPercentage: 8000
+      targetMemoryUtilizationPercentage: 410
+    command: celery -A snappyflow worker -l $LOG_LEVEL -Q periodic -c5 $CELERY_OPTS
+  provision:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+    replicaCount: 1
+    command: celery -A snappyflow worker -l $LOG_LEVEL -Q provision -c1 $CELERY_OPTS
+sfapmaffinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: role
+                operator: In
+                values:
+                  - server
+          topologyKey: kubernetes.io/hostname
+disable_server_side_cursors: false
+postgresql:
+  enabled: true
+  external:
+    dbHost: ""
+    dbPort: ""
+    dbUser: ""
+    dbPassword: ""
+  image:
+    repository: postgres
+    pullPolicy: IfNotPresent
+    tag: "9.6"
+  rootPassword: postgres
+  rootUser: postgres
+  multidb: snappyflow;vizbuilder;commands;elasticsearch_manager
+  multidbUser: snappyflow
+  multidbUserPassord: maplelabs
+redis:
+  image:
+    repository: redis
+    pullPolicy: IfNotPresent
+    tag: "5.0"
+securityContext: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+vizbuilder:
+  service:
+    type: ClusterIP
+    port: 8000
+commands:
+  service:
+    type: ClusterIP
+    port: 8000
+esmanager:
+  service:
+    type: ClusterIP
+    port: 8000
+keycloak:
+  enabled: false
+  serverIP: ""
+  user: ""
+  password: ""
+  realm: ""
+  clientid: ""
+  clientkey: ""
+  publickey: ""
+  supportemail: ""
+  websiteurl: ""
+  defaultprofile: demo-profile
+google_client_id: ""
+google_client_secret: ""
+google_callback_url: /portal/gauth
+usage_system:
+  enabled: false
+  host: ""
+  port: 443
+  tls: false
+ingest_usage_system:
+  enabled: false
+  host: ""
+  port: 443
+  tls: false
+pprof:
+  service:
+    type: ClusterIP
+    port: 8090
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+  imagePullSecrets: []
+  automountServiceAccountToken: false
+cloud:
+  aws:
+    enable: true
+  gcs:
+    enable: false
+    use_google_service_account: true
+    service_account: XXXX-compute@developer.gserviceaccount.com OR
+      XXXX@XXXX.iam.gserviceaccount.com
+    region: us-west1
+    zone: us-west1-c
+  datacenter:
+    enable: false
+global:
+  sfappname: sf-portal-app
+  sfprojectname: snappyflow-app
+  sfappname_key: snappyflow/appname
+  sfprojectname_key: snappyflow/projectname
+  nginx_geo_info_collection: true
+  nginx_ua_parsing: true
+  enable_sftrace: false
+  key: ""
+  sfNodeManager:
+    enabled: false
+    priorityClassName: sf-critical-pod
+  sfScheduler:
+    enabled: false
+    schedulerName: sf-scheduler
