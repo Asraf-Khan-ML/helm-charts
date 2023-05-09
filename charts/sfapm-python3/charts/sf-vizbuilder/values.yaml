@@ -82,6 +82,8 @@ vizbuilder_celery:
     terminationGracePeriodSeconds: 300
     celeryAlertPrometheusExporter:
       image:
+        repository: snappyflowml/celery-alert-prometheus-exporter
+        tag: latest
         pullPolicy: Always
       metricsInterval: 3
       resources:
@@ -151,9 +153,7 @@ postgresql:
     dbUser: ""
     dbPassword: ""
   image:
-    repository: postgres
     pullPolicy: IfNotPresent
-    tag: "9.6"
   rootPassword: postgres
   rootUser: postgres
   multidb: snappyflow;vizbuilder;commands;elasticsearch_manager
@@ -161,9 +161,7 @@ postgresql:
   multidbUserPassord: maplelabs
 redis:
   image:
-    repository: redis
     pullPolicy: IfNotPresent
-    tag: "5.0"
 
 securityContext: {}
 

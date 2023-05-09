@@ -45,66 +45,6 @@ tolerations: []
 
 affinity: {}
 
-redis:
-  image:
-    repository: redis
-    pullPolicy: IfNotPresent
-    tag: "5.0"
-
-  persistence:
-    enabled: true
-    storageClass: ""
-    size: 4Gi
-
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-
-  config:
-    redis.conf: |-
-      appendonly yes
-      maxmemory 300mb
-      maxmemory-policy allkeys-lru
-
-  podAnnotations:
-    prometheus.io/scrape: "false"
-
-postgresql:
-  # enabled true deploys postgresql as statefull set on the same cluster
-  enabled: true
-
-  # if enabled false, chart will connect to external database
-  # create two data bases with names snappyflow and vizbuilder
-  # create a user and grant access to database snappyflow and vizbuilder
-  # provide external section if enabled is false
-
-  external:
-    dbHost: ""
-    dbPort: ""
-    dbUser: ""
-    dbPassword: ""
-
-  image:
-    repository: postgres
-    pullPolicy: IfNotPresent
-    tag: "9.6"
-
-  persistence:
-    enabled: true
-    storageClass: ""
-    size: 8Gi
-
-  # when local postgresql is enabled below values are used to configure database
-  rootPassword: postgres
-  rootUser: postgres
-  multidb: snappyflow;vizbuilder;commands;elasticsearch_manager
-  multidbUser: snappyflow
-  multidbUserPassord: maplelabs
-
 sfapmui:
   service:
     type: NodePort # this is the entrypoint change to Loadbalancer

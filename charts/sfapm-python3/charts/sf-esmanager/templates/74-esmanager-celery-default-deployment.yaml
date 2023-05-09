@@ -62,7 +62,7 @@ spec:
           {{- end }}
           envFrom:
             - configMapRef:
-                name: {{ include "sfapm.fullname" . }}-apm
+                name: {{ include "sfapm.fullname" . }}-esmanager
         - name: redis-ready
           image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
           imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
@@ -72,7 +72,7 @@ spec:
             - "until redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} ping ; do sleep 3; done"
           envFrom:
             - configMapRef:
-                name: {{ include "sfapm.fullname" . }}-apm
+                name: {{ include "sfapm.fullname" . }}-esmanager
       containers:
         - name: celery
           securityContext:

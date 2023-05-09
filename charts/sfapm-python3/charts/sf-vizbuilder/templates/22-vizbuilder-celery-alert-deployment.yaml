@@ -46,7 +46,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: db-ready
-          image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
+          image: "postgres:9.6"
           imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
           command:
             - sh 
@@ -136,7 +136,7 @@ spec:
             {{- end }}
         - name: celery-alert-prometheus-exporter
           command: [/go/metrics]
-          image: "snappyflowml/celery-alert-prometheus-exporter:latest" 
+          image: "{{ .Values.vizbuilder_celery.alert.celeryAlertPrometheusExporter.image.repository }}:{{ .Values.vizbuilder_celery.alert.celeryAlertPrometheusExporter.image.tag }}" 
           imagePullPolicy: "{{ .Values.vizbuilder_celery.alert.celeryAlertPrometheusExporter.image.pullPolicy }}"
           env:
           - name: Metrics_Interval
