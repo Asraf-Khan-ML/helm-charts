@@ -31,7 +31,7 @@ vizbuilder:
     targetMemoryUtilizationPercentage: 240
   image:
     repository: snappyflowml/sfapm-vizbuilder
-    tag: 4.0.219-python3
+    tag: 'v1-1-2'
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -83,7 +83,7 @@ vizbuilder_celery:
     celeryAlertPrometheusExporter:
       image:
         repository: snappyflowml/celery-alert-prometheus-exporter
-        tag: latest
+        tag: 'v1-1-2'
         pullPolicy: Always
       metricsInterval: 3
       resources:
