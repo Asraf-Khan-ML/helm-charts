@@ -141,9 +141,7 @@ postgresql:
     dbPassword: ""
 
   image:
-    repository: postgres
     pullPolicy: IfNotPresent
-    tag: "9.6"
 
   # when local postgresql is enabled below values are used to configure database
   rootPassword: postgres
@@ -154,9 +152,7 @@ postgresql:
   
 redis:
   image:
-    repository: redis
     pullPolicy: IfNotPresent
-    tag: "5.0"
   
 global:
   sfappname: sf-portal-app
