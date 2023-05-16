@@ -63,7 +63,7 @@ sfapmui:
 
   image:
     repository: snappyflowml/sfapm-ui
-    tag: 'master-v1-1-4'
+    tag: 'master-v1-1-5'
     pullPolicy: IfNotPresent
 
   resources:
