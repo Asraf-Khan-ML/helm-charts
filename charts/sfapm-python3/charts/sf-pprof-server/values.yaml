@@ -26,7 +26,7 @@ pprof:
   image:
     repository: snappyflowml/pprof-server
     pullPolicy: IfNotPresent
-    tag: 'master-v1-1-0'
+    tag: 'master-v1-1-1'
   replicaCount: 1
   resources:
     requests:
