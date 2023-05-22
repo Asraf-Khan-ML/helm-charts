@@ -134,7 +134,7 @@ minio:
     minReplicas: 2
     maxReplicas: 10
 
-system-migration:
+systemmigration:
   image:
     pullPolicy: IfNotPresent
     repository: circlecitest/datapath-system-migration

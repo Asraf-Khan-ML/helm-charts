@@ -54,8 +54,8 @@ spec:
       restartPolicy: Never
       containers:
       - name: main
-        image: "{{ .Values.system-migration.image.repository }}:{{ .Values.system-migration.image.tag }}"
-        imagePullPolicy: "{{ .Values.system-migration.image.pullPolicy }}""
+        image: "{{ .Values.systemmigration.image.repository }}:{{ .Values.systemmigration.image.tag }}"
+        imagePullPolicy: "{{ .Values.systemmigration.image.pullPolicy }}""
         volumeMounts:
           - name: {{ .Release.Name }}-system-migration-config
             mountPath: "/etc/conf"
