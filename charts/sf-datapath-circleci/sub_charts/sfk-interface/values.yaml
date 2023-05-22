@@ -22,7 +22,7 @@ external:
 fullnameOverride: ''
 image:
   pullPolicy: IfNotPresent
-  repository: snappyflowml/sfk-interface
+  repository: circlecitest/sfk-interface
   tag: 'master-v1-2-67'
 nameOverride: ''
 nodeSelector: {}
