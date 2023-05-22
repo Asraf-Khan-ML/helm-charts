@@ -55,7 +55,7 @@ spec:
       containers:
       - name: main
         image: "{{ .Values.systemmigration.image.repository }}:{{ .Values.systemmigration.image.tag }}"
-        imagePullPolicy: "{{ .Values.systemmigration.image.pullPolicy }}""
+        imagePullPolicy: "{{ .Values.systemmigration.image.pullPolicy }}"
         volumeMounts:
           - name: {{ .Release.Name }}-system-migration-config
             mountPath: "/etc/conf"
