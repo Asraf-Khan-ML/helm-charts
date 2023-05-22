@@ -26,7 +26,7 @@ external:
   enabled: true
   externalTrafficPolicy: Cluster
   httpsNodePort: 32003
-  nodePort: 32002
+  nodePort: 32004
   type: NodePort
 heapOptions: -Xms210M -Xmx600M -XX:-EnableCPUMonitor -Xtune:virtualized -XX:+UseContainerSupport
   -XX:+CompactStrings -Xverbosegclog:/memory-util-logs/gc-logs/%seq.xml,5,20 -Xdump:system:defaults:file=/memory-util-logs/system-dumps/%seq.dmp
