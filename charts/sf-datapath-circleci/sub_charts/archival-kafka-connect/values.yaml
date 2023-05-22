@@ -49,7 +49,7 @@ heapOptions: -Xms250M -Xmx1300M -Xmns200M -Xmnx800M -XX:MaxDirectMemorySize=100M
 image:
   pullPolicy: IfNotPresent
   repository: circlecitest/arch-kafka-connect
-  tag: 'master-v1-2-71'
+  tag: 'master-v1-2-72'
 inByteRate: 1736111
 jmx:
   port: 5555
