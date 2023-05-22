@@ -5,7 +5,7 @@ fullnameOverride: ""
 image:
   pullPolicy: IfNotPresent
   repository: circlecitest/sftrace-server
-  tag: 'master-v1-2-67'
+  tag: 'master-v1-2-70'
 imagePullSecrets: []
 
 serviceAccount:
