@@ -18,7 +18,7 @@ fullnameOverride: ''
 image:
   pullPolicy: IfNotPresent
   repository: circlecitest/authenticator
-  tag: 'master-v1-3-88'
+  tag: 'master-v1-3-91'
 nameOverride: ''
 nodeSelector: {}
 serverPort: :5006
