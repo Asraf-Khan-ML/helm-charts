@@ -23,7 +23,7 @@ fullnameOverride: ''
 image:
   pullPolicy: IfNotPresent
   repository: circlecitest/sfk-interface
-  tag: 'master-v1-3-75'
+  tag: 'master-v1-3-76'
 nameOverride: ''
 nodeSelector: {}
 podAnnotations: {}
