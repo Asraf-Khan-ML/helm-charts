@@ -54,6 +54,6 @@ schemaGenerator:
 image:
   pullPolicy: IfNotPresent
   repository: circlecitest/schema-generator
-  tag: 'master-v1-3-84'
+  tag: 'master-v1-3-86'
 servicePort: 8081
 tolerations: {}
