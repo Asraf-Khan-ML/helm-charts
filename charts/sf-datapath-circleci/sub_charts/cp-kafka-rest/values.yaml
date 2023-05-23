@@ -43,7 +43,7 @@ https:
 httpsServicePort: 8081
 image:
   pullPolicy: IfNotPresent
-  repository: snappyflowml/sf-kafka-rest
+  repository: circlecitest/sf-kafka-rest
   tag: 'v1-2-80'
 jmx:
   port: 5555

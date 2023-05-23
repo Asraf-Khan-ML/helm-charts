@@ -17,7 +17,7 @@ db:
 fullnameOverride: ''
 image:
   pullPolicy: IfNotPresent
-  repository: snappyflowml/authenticator
+  repository: circlecitest/authenticator
   tag: 'v1-2-80'
 nameOverride: ''
 nodeSelector: {}

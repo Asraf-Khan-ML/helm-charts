@@ -10,7 +10,7 @@ containerResources:
 fullnameOverride: ''
 image:
   pullPolicy: IfNotPresent
-  repository: snappyflowml/signatures
+  repository: circlecitest/signatures
   tag: 'v1-2-80'
 nameOverride: ''
 nodeSelector: {}
