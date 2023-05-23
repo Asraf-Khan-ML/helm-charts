@@ -11,7 +11,7 @@ fullnameOverride: ''
 image:
   pullPolicy: IfNotPresent
   repository: snappyflowml/signatures
-  tag: 'v1-2-79'
+  tag: 'v1-2-80'
 nameOverride: ''
 nodeSelector: {}
 service:
