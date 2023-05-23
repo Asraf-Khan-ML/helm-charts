@@ -122,9 +122,7 @@ postgresql:
     dbPassword: ""
 
   image:
-    repository: postgres
     pullPolicy: IfNotPresent
-    tag: "9.6"
 
   persistence:
     enabled: true
@@ -140,9 +138,7 @@ postgresql:
 
 redis:
   image:
-    repository: redis
     pullPolicy: IfNotPresent
-    tag: "5.0"
 
 sfapm:
   service:
