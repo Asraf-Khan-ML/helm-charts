@@ -11,7 +11,7 @@ fullnameOverride: ''
 image:
   pullPolicy: IfNotPresent
   repository: circlecitest/signatures
-  tag: 'master-v1-3-92'
+  tag: 'master-v1-3-93'
 nameOverride: ''
 nodeSelector: {}
 service:
