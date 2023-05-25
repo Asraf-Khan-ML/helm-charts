@@ -21,8 +21,6 @@ sidecarLogger:
 mappingUpdator:
   enabled: true
   image:
-    repository: snappyflowml/plugin-mapping-updator
-    tag: 0.1.1
     pullPolicy: Always
   resources:
     requests:
