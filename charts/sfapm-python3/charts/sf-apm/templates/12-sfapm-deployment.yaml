@@ -204,7 +204,7 @@ spec:
         {{- end }}
         {{- if .Values.mappingUpdator.enabled }}
         - name: plugin-mapping-updator
-          image: "{{ .Values.mappingUpdator.image.repository }}:{{ .Values.mappingUpdator.image.tag }}"
+          image: "snappyflowml/plugin-mapping-updator:0.1.1"
           command: ["/bin/sh","-c"]
           args: ["cp -r /app/plugin_info/* /mappings/ && /app/plugin-mapping-updator --git_branch release --update_remote_git=false --local_root_mapping_dir /mappings/"]
           resources:
