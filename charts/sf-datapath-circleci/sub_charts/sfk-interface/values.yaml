@@ -22,8 +22,8 @@ external:
 fullnameOverride: ''
 image:
   pullPolicy: IfNotPresent
-  repository: snappyflowml/sfk-interface
-  tag: 'v1-2-72'
+  repository: circlecitest/sfk-interface
+  tag: 'v1-3-89'
 nameOverride: ''
 nodeSelector: {}
 podAnnotations: {}

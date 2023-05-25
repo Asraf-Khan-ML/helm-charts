@@ -53,7 +53,7 @@ schemaGenerator:
     name: schema-registry
 image:
   pullPolicy: IfNotPresent
-  repository: snappyflowml/schema-generator
-  tag: 'v1-2-72'
+  repository: circlecitest/schema-generator
+  tag: 'v1-3-89'
 servicePort: 8081
 tolerations: {}

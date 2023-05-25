@@ -17,8 +17,8 @@ db:
 fullnameOverride: ''
 image:
   pullPolicy: IfNotPresent
-  repository: snappyflowml/authenticator
-  tag: 'v1-2-72'
+  repository: circlecitest/authenticator
+  tag: 'v1-3-89'
 nameOverride: ''
 nodeSelector: {}
 serverPort: :5006

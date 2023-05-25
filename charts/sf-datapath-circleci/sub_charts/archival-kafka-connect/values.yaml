@@ -48,8 +48,8 @@ heapOptions: -Xms250M -Xmx1300M -Xmns200M -Xmnx800M -XX:MaxDirectMemorySize=100M
   -Xdump:system+heap+java
 image:
   pullPolicy: IfNotPresent
-  repository: snappyflowml/arch-kafka-connect
-  tag: 'v1-2-72'
+  repository: circlecitest/arch-kafka-connect
+  tag: 'v1-3-89'
 inByteRate: 1736111
 jmx:
   port: 5555
