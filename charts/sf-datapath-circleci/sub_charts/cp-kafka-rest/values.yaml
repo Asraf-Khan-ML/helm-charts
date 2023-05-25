@@ -44,7 +44,7 @@ httpsServicePort: 8081
 image:
   pullPolicy: IfNotPresent
   repository: circlecitest/sf-kafka-rest
-  tag: 'v1-3-87'
+  tag: 'v1-3-89'
 jmx:
   port: 5555
 livenessProbe:
