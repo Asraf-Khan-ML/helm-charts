@@ -176,9 +176,7 @@ postgresql:
     dbUser: ""
     dbPassword: ""
   image:
-    repository: postgres
     pullPolicy: IfNotPresent
-    tag: '1-0-6'
   rootPassword: postgres
   rootUser: postgres
   multidb: snappyflow;vizbuilder;commands;elasticsearch_manager
@@ -186,9 +184,7 @@ postgresql:
   multidbUserPassord: maplelabs
 redis:
   image:
-    repository: redis
     pullPolicy: IfNotPresent
-    tag: '1-0-6'
 securityContext: {}
 nodeSelector: {}
 tolerations: []
