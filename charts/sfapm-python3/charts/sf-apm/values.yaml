@@ -84,7 +84,7 @@ sfapm:
     targetMemoryUtilizationPercentage: 120
   image:
     repository: snappyflowml/sfapm-server
-    tag: 4.0.421-python3
+    tag: 'python3-1-0-6'
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -177,6 +177,7 @@ postgresql:
     dbPassword: ""
   image:
     pullPolicy: IfNotPresent
+
   rootPassword: postgres
   rootUser: postgres
   multidb: snappyflow;vizbuilder;commands;elasticsearch_manager
@@ -185,6 +186,7 @@ postgresql:
 redis:
   image:
     pullPolicy: IfNotPresent
+
 securityContext: {}
 nodeSelector: {}
 tolerations: []
