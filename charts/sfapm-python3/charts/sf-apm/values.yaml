@@ -177,7 +177,6 @@ postgresql:
     dbPassword: ""
   image:
     pullPolicy: IfNotPresent
-
   rootPassword: postgres
   rootUser: postgres
   multidb: snappyflow;vizbuilder;commands;elasticsearch_manager
@@ -186,7 +185,6 @@ postgresql:
 redis:
   image:
     pullPolicy: IfNotPresent
-
 securityContext: {}
 nodeSelector: {}
 tolerations: []
