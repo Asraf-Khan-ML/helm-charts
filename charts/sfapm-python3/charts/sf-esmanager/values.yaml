@@ -44,9 +44,7 @@ postgresql:
     dbUser: ""
     dbPassword: ""
   image:
-    repository: postgres
     pullPolicy: IfNotPresent
-    tag: "9.6"
   rootPassword: postgres
   rootUser: postgres
   multidb: snappyflow;vizbuilder;commands;elasticsearch_manager
@@ -54,9 +52,7 @@ postgresql:
   multidbUserPassord: maplelabs
 redis:
   image:
-    repository: redis
     pullPolicy: IfNotPresent
-    tag: "5.0"
 sfapm:
   replicaCount: 2
   cloud: ""
