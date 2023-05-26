@@ -44,7 +44,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: db-ready
-          image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
+          image: "postgres:9.6"
           imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
           command:
             - sh 
@@ -62,7 +62,7 @@ spec:
             - configMapRef:
                 name: {{ include "sfapm.fullname" . }}-esmanager
         - name: redis-ready
-          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+          image: "redis:5.0"
           imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
           command:
             - sh 
