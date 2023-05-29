@@ -63,7 +63,7 @@ spec:
             - configMapRef:
                 name: {{ include "sfapm.fullname" . }}-vizbuilder
         - name: redis-ready
-          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+          image: "redis:5.0"
           imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
           command:
             - sh 
