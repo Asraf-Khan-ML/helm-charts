@@ -155,6 +155,16 @@ sfapm_celery:
         memory: 100Mi
     replicaCount: 1
     command: celery -A snappyflow worker -l $LOG_LEVEL -Q provision -c1 $CELERY_OPTS
+  sftrace:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 768Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+    replicaCount: 1
+    command: "celery -A snappyflow worker -l $LOG_LEVEL -Q sftrace -c10 $CELERY_OPTS"
 sfapmaffinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
