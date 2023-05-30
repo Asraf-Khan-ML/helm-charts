@@ -65,7 +65,7 @@ commands:
 
   image:
     repository: snappyflowml/sfapm-commands
-    tag: 'master-v1-1-7'
+    tag: 'master-v1-1-8'
     pullPolicy: IfNotPresent
 
   resources:
