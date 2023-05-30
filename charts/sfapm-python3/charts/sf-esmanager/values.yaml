@@ -99,7 +99,7 @@ esmanager:
     targetMemoryUtilizationPercentage: 240
   image:
     repository: snappyflowml/sfapm-esmanager
-    tag: 'master-v1-0-3'
+    tag: 'master-v1-0-5'
     pullPolicy: IfNotPresent
   resources:
     limits:
