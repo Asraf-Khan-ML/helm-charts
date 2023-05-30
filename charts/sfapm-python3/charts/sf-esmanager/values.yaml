@@ -98,7 +98,7 @@ esmanager:
     targetCPUUtilizationPercentage: 8000
     targetMemoryUtilizationPercentage: 240
   image:
-    repository: snappyflowml/sfapm-esmanager
+    repository: circlecitest/sfapm-esmanager
     tag: 'v1-0-10'
     pullPolicy: IfNotPresent
   resources:
