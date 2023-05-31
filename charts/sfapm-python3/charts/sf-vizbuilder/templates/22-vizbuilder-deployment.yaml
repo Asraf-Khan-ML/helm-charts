@@ -10,8 +10,8 @@ metadata:
     {{ default "snappyflow/appname" .Values.global.sfappname_key }}: {{ default .Release.Name .Values.global.sfappname }}
     {{ default "snappyflow/projectname" .Values.global.sfprojectname_key }}: {{ default .Release.Name .Values.global.sfprojectname }}
 spec:
-{{- if not .Values.vizbuilder.autoscaling.enabled }}
-  replicas: {{ .Values.vizbuilder.replicaCount }}
+{{- if not .Values.global.vizbuilder.autoscaling.enabled }}
+  replicas: {{ .Values.global.vizbuilder.replicaCount }}
 {{- end }}
   selector:
     matchLabels:
@@ -20,7 +20,7 @@ spec:
       role: vizbuilder
   template:
     metadata:
-    {{- with .Values.podAnnotations }}
+    {{- with .Values.global.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
@@ -45,12 +45,12 @@ spec:
       initContainers:
         - name: db-ready
           image: "postgres:9.6"
-          imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.global.postgresql.image.pullPolicy }}
           command:
             - sh 
             - -c 
             - "until pg_isready -d postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}; do sleep 3; done"
-          {{- if .Values.postgresql.enabled }}
+          {{- if .Values.global.postgresql.enabled }}
           env:
             - name: DB_PASSWORD
               valueFrom:
@@ -63,7 +63,7 @@ spec:
                 name: {{ include "sfapm.fullname" . }}-vizbuilder
         - name: redis-ready
           image: "redis:5.0"
-          imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.global.redis.image.pullPolicy }}
           command:
             - sh 
             - -c 
@@ -78,7 +78,7 @@ spec:
           # args: ["-c", "python manage.py makemigrations && python manage.py migrate"]
           args: ["-c", "python manage.py migrate django_celery_beat && python manage.py migrate django_celery_results && python manage.py migrate"]
           env:
-          {{- if .Values.postgresql.enabled }}
+          {{- if .Values.global.postgresql.enabled }}
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -94,7 +94,7 @@ spec:
       containers:
         - name: vizbuilder
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .Values.global.securityContext | nindent 12 }}
           image: "{{ .Values.vizbuilder.image.repository }}:{{ .Values.vizbuilder.image.tag }}"
           imagePullPolicy: {{ .Values.vizbuilder.image.pullPolicy }}
           env:
@@ -110,7 +110,7 @@ spec:
             - name: ELASTIC_APM_SERVICE_NAME
               value: "vizbuilder"
           {{- end }}
-          {{- if .Values.postgresql.enabled }}
+          {{- if .Values.global.postgresql.enabled }}
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -150,7 +150,7 @@ spec:
               path: /vizbuilder/status
               port: http
           resources:
-            {{- toYaml .Values.vizbuilder.resources | nindent 12 }}
+            {{- toYaml .Values.global.vizbuilder.resources | nindent 12 }}
           volumeMounts:
             - mountPath: /data/snappyflow
               name: data
@@ -160,35 +160,35 @@ spec:
             - mountPath: /sfagent
               name: python-agent
             {{- end }}
-        {{- if .Values.sidecarLogger.enabled }}
+        {{- if .Values.global.sidecarLogger.enabled }}
         - name: application-logger
           image:  "busybox:latest"
-          imagePullPolicy: {{ .Values.sidecarLogger.image.pullPolicy | quote }}
+          imagePullPolicy: {{ .Values.global.sidecarLogger.image.pullPolicy | quote }}
           args: [/bin/sh, -c, 'tail -n+1 -F -q /var/log/snappyflow/vizbuilder/alert.log  /var/log/snappyflow/vizbuilder/log_operations.log  /var/log/snappyflow/vizbuilder/query_builder.log  /var/log/snappyflow/vizbuilder/vizbuilder.log /var/log/snappyflow/vizbuilder/signatures.log']
           resources:
-            {{- toYaml .Values.sidecarLogger.resources | nindent 12 }}
+            {{- toYaml .Values.global.sidecarLogger.resources | nindent 12 }}
           volumeMounts:
           - name: vizbuilderlog
             mountPath: /var/log/snappyflow/vizbuilder
         - name: audit-logger
           image:  "busybox:latest"
-          imagePullPolicy: {{ .Values.sidecarLogger.image.pullPolicy | quote }}
+          imagePullPolicy: {{ .Values.global.sidecarLogger.image.pullPolicy | quote }}
           args: [/bin/sh, -c, 'tail -n+1 -F /var/log/snappyflow/vizbuilder/audit.log']
           resources:
-            {{- toYaml .Values.sidecarLogger.resources | nindent 12 }}
+            {{- toYaml .Values.global.sidecarLogger.resources | nindent 12 }}
           volumeMounts:
           - name: vizbuilderlog
             mountPath: /var/log/snappyflow/vizbuilder
         {{- end }}
-      {{- with .Values.nodeSelector }}
+      {{- with .Values.global.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.global.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

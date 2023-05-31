@@ -1,55 +1,3 @@
-# Default values for sfapm.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-# set to true to enable debug logs on
-# apm and vizbuilder
-enableDebug: false
-archiverEnabled: true
-nameOverride: ""
-fullnameOverride: ""
-imagePullSecrets: []
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-  # The names of the image pull secrets to be attached to this service account
-  imagePullSecrets: []
-  # disable mounting sa token inside pods
-  automountServiceAccountToken: false
-
-podAnnotations:
-  prometheus.io/scrape: "false"
-
-podSecurityContext:
-  {}
-  # fsGroup: 2000
-
-securityContext:
-  {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
-sfapmui:
-  service:
-    type: NodePort # this is the entrypoint change to Loadbalancer
-    nodePort: 30080
-
 global:
   sfappname: sf-portal-app
   sfprojectname: snappyflow-app
@@ -59,10 +7,181 @@ global:
   nginx_ua_parsing: true
   enable_sftrace: false
   key: ""
-
   sfNodeManager:
     enabled: false
     priorityClassName: sf-critical-pod
   sfScheduler:
     enabled: false
     schedulerName: sf-scheduler
+
+  imagePullSecrets:
+  - name: xxx
+
+  archiverEnabled: true
+
+  vizbuilder:
+    pgBouncer:
+      enabled: false
+      dbHost: ""
+      dbPort: ""
+      dbUser: ""
+      dbPassword: ""
+    replicaCount: 2
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 8000
+      targetMemoryUtilizationPercentage: 240
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 768Mi
+      requests:
+        cpu: 10m
+        memory: 256Mi
+    service:
+      type: ClusterIP
+      port: 8000
+
+  vizbuilder_celery:
+    env:
+      C_FORCE_ROOT: true
+      CELERY_OPTS: -O fair --max-tasks-per-child 20 -P gevent
+      MAXIMUM_RUNNING_TASKS: 10
+    beat:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      command: celery -A vizbuilder beat -l $LOG_LEVEL
+    alert:
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 768Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      replicaCount: 3
+      command: celery -A vizbuilder worker -l $LOG_LEVEL -Q alert -c
+        $MAXIMUM_RUNNING_TASKS $CELERY_OPTS & celery -A vizbuilder flower
+        --address=localhost --port=5566
+      autoscaling:
+        enabled: true
+        minReplicas: 3
+        maxReplicas: 5
+        scaleUpPeriod: 30
+        scaleDownPeriod: 60
+      podAnnotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "2112"
+        prometheus.io/scrape: "true"
+      terminationGracePeriodSeconds: 300
+      celeryAlertPrometheusExporter:
+        metricsInterval: 3
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+    logops:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      replicaCount: 1
+      command: celery -A vizbuilder worker -l $LOG_LEVEL -Q logops -c10 $CELERY_OPTS
+    signature:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      replicaCount: 1
+      command: celery -A vizbuilder worker -l $LOG_LEVEL -Q signature -c10 $CELERY_OPTS
+    provisiontemplate:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      replicaCount: 1
+      command: celery -A vizbuilder worker -l $LOG_LEVEL -Q provisiontemplate -c1
+        $CELERY_OPTS
+
+  sidecarLogger:
+    enabled: true
+    image:
+      pullPolicy: Always
+    resources:
+      requests:
+        cpu: 10m
+        memory: 10Mi
+      limits:
+        cpu: 50m
+        memory: 50Mi
+
+  postgresql:
+    enabled: true
+    external:
+      dbHost: ""
+      dbPort: ""
+      dbUser: ""
+      dbPassword: ""
+    image:
+      pullPolicy: IfNotPresent
+    rootPassword: postgres
+    rootUser: postgres
+    multidb: snappyflow;vizbuilder;commands;elasticsearch_manager
+    multidbUser: snappyflow
+    multidbUserPassord: maplelabs
+
+  redis:
+    image:
+      pullPolicy: IfNotPresent
+
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: ""
+    imagePullSecrets:
+    - name: xxx
+    automountServiceAccountToken: false
+
+  podAnnotations:
+    prometheus.io/scrape: "false"
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+  cloud:
+    aws:
+      enable: true
+    gcs:
+      enable: false
+      use_google_service_account: true
+      service_account: XXXX-compute@developer.gserviceaccount.com OR
+        XXXX@XXXX.iam.gserviceaccount.com
+      region: us-west1
+      zone: us-west1-c
+    datacenter:
+      enable: false
+
+  securityContext: {}
+
+sfapmui:
+  service:
+    type: NodePort # this is the entrypoint change to Loadbalancer
+    nodePort: 30080
+
+
