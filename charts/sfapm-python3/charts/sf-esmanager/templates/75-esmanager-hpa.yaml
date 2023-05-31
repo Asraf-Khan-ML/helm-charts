@@ -1,4 +1,4 @@
-{{- if .values.global.sfapm.autoscaling.enabled }}
+{{- if .Values.global.sfapm.autoscaling.enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:

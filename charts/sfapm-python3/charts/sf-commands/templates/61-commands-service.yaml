@@ -9,9 +9,9 @@ metadata:
     {{ default "snappyflow/appname" .Values.global.sfappname_key }}: {{ default .Release.Name .Values.global.sfappname }}
     {{ default "snappyflow/projectname" .Values.global.sfprojectname_key }}: {{ default .Release.Name .Values.global.sfprojectname }}
 spec:
-  type: {{ .values.global.commands.service.type }}
+  type: {{ .Values.global.commands.service.type }}
   ports:
-    - port: {{ .values.global.commands.service.port }}
+    - port: {{ .Values.global.commands.service.port }}
       targetPort: http
       protocol: TCP
       name: http
