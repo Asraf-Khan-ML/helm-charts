@@ -140,6 +140,10 @@ global:
       dbPassword: ""
     image:
       pullPolicy: IfNotPresent
+    persistence:
+      enabled: true
+      storageClass: ""
+      size: 8Gi
     rootPassword: postgres
     rootUser: postgres
     multidb: snappyflow;vizbuilder;commands;elasticsearch_manager
@@ -148,7 +152,7 @@ global:
 
   redis:
     image:
-      pullPolicy: IfNotPresent
+      pullPolicy: IfNotPres1ent
 
   serviceAccount:
     create: true
@@ -178,6 +182,333 @@ global:
       enable: false
 
   securityContext: {}
+
+  sfapmui:
+    replicaCount: 1
+
+    autoscaling:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 2
+      # Below values are based on requests.
+      # Hence value > 100 needs to be calculated based on set limits
+      # Below values are calculated such that (limit / request) * 80 -> for 80% target utilization
+      targetCPUUtilizationPercentage: 1600
+      targetMemoryUtilizationPercentage: 160
+
+    resources:
+      limits:
+        cpu: 200m
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+
+    service:
+      type: NodePort # this is the entrypoint change to Loadbalancer
+      nodePort: 30080
+      
+    env: {}
+
+    tls:
+      enabled: true
+      # change these please provide base64 encode certificate and its keys
+      # use command base64 -w 0 <filename>
+      cert: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURrekNDQW51Z0F3SUJBZ0lVZG40T25CcnNKVEVyUWNmaFVGcDBZeVFOckt3d0RRWUpLb1pJaHZjTkFRRUwKQlFBd1dURUxNQWtHQTFVRUJoTUNRVlV4RXpBUkJnTlZCQWdNQ2xOdmJXVXRVM1JoZEdVeElUQWZCZ05WQkFvTQpHRWx1ZEdWeWJtVjBJRmRwWkdkcGRITWdVSFI1SUV4MFpERVNNQkFHQTFVRUF3d0piRzlqWVd4b2IzTjBNQjRYCkRUSXdNRFl3TlRFeE1UVXhORm9YRFRJeE1EWXdOVEV4TVRVeE5Gb3dXVEVMTUFrR0ExVUVCaE1DUVZVeEV6QVIKQmdOVkJBZ01DbE52YldVdFUzUmhkR1V4SVRBZkJnTlZCQW9NR0VsdWRHVnlibVYwSUZkcFpHZHBkSE1nVUhSNQpJRXgwWkRFU01CQUdBMVVFQXd3SmJHOWpZV3hvYjNOME1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBCk1JSUJDZ0tDQVFFQXY4N2RmZmZGOGdJcnhpYm5lVVRPZ2FnTXllMXc2RjVvZFI3MUcwRFZ4Q1NVdkhKS1Z5ODkKNUozZVBJd2NSbkJmQ25ONXJNaURkVmZuNWswMVUyUmhLYmswbDF2LzFSMmJJWTFldG1oS3NpbmlvbU5VbzAycApNNW1iTEhTWG9RRWdwT0ZtNUxNcVFVSkwrMkxWdFB2cU5JTzV1THEzYytTY1NVNnZhOFBaU2R3OUVVYnhyYk1qCm9LMHJSTnZJSUlhaVFpOEZJeFJ6VUZRbkYvSGlLSm80NHhsRnhDaGFvZTRHTUN2UVdGVUpOQVNteVZuR2hQYnEKVmFmK1FndEhndG5VNnF5RjIvc0NOQjlhVi94L0w0V0RTMzZUSmZsZlBxalJEMWkybzI5bGZDckVqeXBMaDNyeAoxc0ZudlBiQ1E0TFdvQmxQQkNVdlpSTWNMVVRKZFFjY0h3SURBUUFCbzFNd1VUQWRCZ05WSFE0RUZnUVVMWkxnCjE2RVNla1M1YXFleTMrTG03V1g0V1Jnd0h3WURWUjBqQkJnd0ZvQVVMWkxnMTZFU2VrUzVhcWV5MytMbTdXWDQKV1Jnd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVFFQUF4bmFRMmpqWHR6eAozNlNmT0hCSzVFQ25Qb3I0dXp2NkVhQnR2Rlgwby9Pajh6SVVwbDFSVllUbXFJcEVIZUc5SVZocndFdi8vOUFRCnRZTncwaWpmUk1tQ0g2L0ZmQTZsWTdFcW5lN0hzVElHU0UxVllOcWwyVTkyN21BemROMUdqRzlpak1uZmpUSVUKeENBL2kyTE1JQ3R2RG5ESUtxdmJ3ZnBSeDFGNHRRL3BZVnp5UnFZRUxZcnZKSXpDTGpQNEs0VjFhdUcwMDh5VApNcHgrcDlWOEpTekhiVTlZdHVvRGJKWlBRVmlXSUNrbkMvWEdYc2VQMGJGQkc1L2Q1Y2xMdnpxM1dJOGRKWDRiClpFMUo2VU9EOWF5N3dJMkF6UUJ4dDNuUzE2cjgwSTBJQ2I4eHVMVVdFM1FVdEs0d256ZnhuZnZCSkVpYk4yQXEKRVpmOEY4MThyUT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0KCg==
+      key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2UUlCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktjd2dnU2pBZ0VBQW9JQkFRQy96dDE5OThYeUFpdkcKSnVkNVJNNkJxQXpKN1hEb1htaDFIdlViUU5YRUpKUzhja3BYTHoza25kNDhqQnhHY0Y4S2MzbXN5SU4xVitmbQpUVFZUWkdFcHVUU1hXLy9WSFpzaGpWNjJhRXF5S2VLaVkxU2pUYWt6bVpzc2RKZWhBU0NrNFdia3N5cEJRa3Y3Cll0VzArK28wZzdtNHVyZHo1SnhKVHE5cnc5bEozRDBSUnZHdHN5T2dyU3RFMjhnZ2hxSkNMd1VqRkhOUVZDY1gKOGVJb21qampHVVhFS0ZxaDdnWXdLOUJZVlFrMEJLYkpXY2FFOXVwVnAvNUNDMGVDMmRUcXJJWGIrd0kwSDFwWAovSDh2aFlOTGZwTWwrVjgrcU5FUFdMYWpiMlY4S3NTUEtrdUhldkhXd1dlODlzSkRndGFnR1U4RUpTOWxFeHd0ClJNbDFCeHdmQWdNQkFBRUNnZ0VCQUt0ZTdqSXdBQ0Zib3pTbGFjYkZuU1BtdTVabW1LeGtQVHYzYnRMc3VKRkkKaGNOZzhkNjNqTHNIK1psckxaQVpzakNxUDVvS2hMbUEwdWJITU0vVExhU1RudE5sRlV5WjZSS3ZObUlQQ0QzcQpnbHpJRnNUWkRFWFlCZlpRTFhGaWlvSUdDV0pvV1daNUQxNEpUaHNud0hjdkFlNTBsSmZ0TjEyZitjZDA4bHl6CjV5Q1g1ODJsMnAwUUVDUlRQc0lVRGlHck9uYVpsY2k2bEhLZWIwbVdaR0Z0dEZGbytIZGdqcHIyTytreFN3SVMKY1p5MDk3RFJyODgwMzkzbVdUaDVnODFFeGpheVQwUUlQSGNlSUFORkRmUW9WSnhQMXAraEtNTjdnMTJIWTBpMQowOXoyU3czR1ZhNXFlV2NTdUkzOTg3aUtDNTRQeHBYK3M3UlQ4aWRIaUtFQ2dZRUE2alZvdDlRU3B3ZlQ3VzVzCnBDSFNIcTV2NDUvVFFLNlovRWR0c3RQaE04aFhzZ2ZYbThhbE9kYXZJbVY2d2IxMHZsRnoxemg4cEh6RCtZdEwKSXJ1clBRL3lDR0VjeS9vZmtLcmF3UGxrUjE1YkVuYVlBWTIxelVObGRsVFZCOUlNVFcxYjRWaEpXQ0RQTnZWMApIMlVsM0xYWngxM2VaZklZT2IrMXJLT0t4VmtDZ1lFQTBhZUZoa0g0cVNUaHdNVUNpTm9aVXNsVlFkY2NMSGw4ClJZZjR3dHhZTnV1VTRPZm1JVE1XZWVtaEdENTNVQjBoVnp1dkc1UmgveDhQRDQyWm5NY3JpQk9oNEx4MGVGSksKMkR6czVjNmwyOVVlRS9laGJmNFNxR3NieEhwUHNDRWU4WnRTYUFoems2Z1R5VG13bEVOTmJqZTYrQnRCM0hXeApuRXZLZmMxWHBqY0NnWUJCNjVKejJ6Nzh3RmxJQk1LVFYrbWFOU0xOQUprbkpYMjE0aXpnSG43T1lsODhmclNTCjVkQnZmUnVDSk9udVNmTG45bWtTZEpXd2ZtVnlnV0ErZ0cvc0dlYlhzTzI0QThpS29XdzgwSFVIR1dtc3dyQjYKRDNiU05Wd0RlRkVWaUd0cUI1UEswMXloYjJxalgyYTF4M1Jtc05DQktzeUVDU1lFYXc4cGJrYUswUUtCZ0RIYworUG5raU9LWnZnT2VGNnM2ekJrUGYzS0lXZEFPR010a3VucUY4NGtrWUtWWklqZTFNZHhPLzV5SGh0TU1DcGozCnZmNytQSXh6ODU0TVhJT1lMemRQREFvcWFEMFJ2WEZPbEQxWDk4U2dIR1k5V0N5VDZCWWNXMTlRZzlGdEh6SHgKY2hrQ0laTDF2N2IxUEpVV3FMelZEbWZoKzdrV1dPYkdjK09WeWduakFvR0FLajRnYzFOMFkxQXlEQzczZEZxTQo2ZUJ2QjIzTmNxNmx6M0cxVHl5b0RCWDJOeDFmQ2l1aVNzSTdJbkZnYTBWQ0w5RE5CVjNaYjlKdGIrdlhZcmlRCmhpQU9BR2xSSGlOTXJ6MXo2aUhGd1FtYmRMU1JzUEFocC8xeE1jd0dEVWpuYmVoN1ZjRFZjbE1EUUlXRUNibnEKc1B3T2dwZ05HY1FqejhlcjFzLzNnNms9Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0KCg==
+
+  pprof:
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+      limits:
+        cpu: 1
+        memory: 512Mi
+    service:
+      type: ClusterIP
+      port: 8090
+
+  commands:
+    replicaCount: 2
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 3
+      # Below values are based on requests.
+      # Hence value > 100 needs to be calculated based on set limits
+      # Below values are calculated such that (limit / request) * 80 -> for 80% target utilization
+      targetCPUUtilizationPercentage: 8000
+      targetMemoryUtilizationPercentage: 240
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 768Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    service:
+      type: ClusterIP
+      port: 8000
+
+  commands_celery:
+    env:
+      C_FORCE_ROOT: true
+      CELERY_OPTS: "-O fair --max-tasks-per-child 20 -P gevent"
+    beat:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 100m
+          memory: 100Mi
+      command: "celery -A command_server beat --scheduler django -l $LOG_LEVEL"
+
+    default:
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 768Mi
+        requests:
+          cpu: 100m
+          memory: 100Mi
+      replicaCount: 1
+      command: "celery -A command_server worker -l $LOG_LEVEL -Q default -c10 $CELERY_OPTS"
+
+  sfapm:
+    replicaCount: 2
+    cloud: ""
+    ingress:
+      enabled: false
+      es_user: ""
+      es_http: http
+      es_host: ""
+      es_pass: ""
+      es_port: ""
+      es_operating_mode: ""
+      kafka_api: ""
+      arhiver_url: ""
+      kafka_user: ""
+      kafka_pwd: ""
+    azure:
+      storage_account_name: ""
+      storage_account_key: ""
+    quotasEnabled: false
+    rollover:
+      custom_config: false
+      metric:
+        rollover_max_age: 10d
+        rollover_max_docs: None
+        rollover_max_size: 30gb
+      log:
+        rollover_max_age: 10d
+        rollover_max_docs: None
+        rollover_max_size: 30gb
+      trace:
+        rollover_max_age: 1d
+        rollover_max_docs: None
+        rollover_max_size: 30gb
+      rum:
+        rollover_max_age: 1d
+        rollover_max_docs: None
+        rollover_max_size: 30gb
+      profile:
+        rollover_max_age: 1d
+        rollover_max_docs: None
+        rollover_max_size: 30gb
+      control:
+        rollover_max_age: 1d
+        rollover_max_docs: None
+        rollover_max_size: 30gb
+    serverid: ""
+    switchOffPrestoCoord: "true"
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 1600
+      targetMemoryUtilizationPercentage: 120
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 768Mi
+      requests:
+        cpu: 50m
+        memory: 512Mi
+    service:
+      type: ClusterIP
+      port: 8000
+
+  sfapm_celery:
+    env:
+      C_FORCE_ROOT: true
+      CELERY_OPTS: -O fair --max-tasks-per-child 20 -P gevent
+    beat:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      command: celery -A snappyflow beat -l $LOG_LEVEL
+    default:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      replicaCount: 1
+      command: celery -A snappyflow worker -l $LOG_LEVEL -Q default -c10 $CELERY_OPTS
+    notify:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      replicaCount: 1
+      command: celery -A snappyflow worker -l $LOG_LEVEL -Q notify -c20 $CELERY_OPTS
+    periodic:
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 512Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      replicaCount: 3
+      autoscaling:
+        enabled: true
+        minReplicas: 3
+        maxReplicas: 6
+        targetCPUUtilizationPercentage: 8000
+        targetMemoryUtilizationPercentage: 410
+      command: celery -A snappyflow worker -l $LOG_LEVEL -Q periodic -c5 $CELERY_OPTS
+    provision:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      replicaCount: 1
+      command: celery -A snappyflow worker -l $LOG_LEVEL -Q provision -c1 $CELERY_OPTS
+    sftrace:
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 768Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      replicaCount: 1
+      command: "celery -A snappyflow worker -l $LOG_LEVEL -Q sftrace -c10 $CELERY_OPTS"
+
+  esmanager:
+    replicaCount: 2
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 8000
+      targetMemoryUtilizationPercentage: 240
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 768Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    service:
+      type: ClusterIP
+      port: 8000
+    warm_movement_rules:
+      thresholds:
+        - hot_disk_percentage:
+            gt: 80
+        - hot_store_to_heap:
+            gt: 45
+      prerequisties: {}
+    warm_allocated_freedisk_percent: 80
+    min_warm_nodes: 2
+    max_relocating_index: 2
+    max_shrink_job: 2
+    max_forcemerge_job: 2
+    max_ongoing_backups: 3
+    max_ongoing_restores: 3
+
+  esmanager_celery:
+    env:
+      C_FORCE_ROOT: true
+      CELERY_OPTS: -O fair --max-tasks-per-child 200 -P solo
+    beat:
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 100m
+          memory: 100Mi
+      command: celery -A elasticsearch_manager beat --scheduler django -l $LOG_LEVEL
+    default:
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 768Mi
+        requests:
+          cpu: 100m
+          memory: 100Mi
+      replicaCount: 2
+      command: celery -A elasticsearch_manager worker -l $LOG_LEVEL -Q
+        es_mng_default  $CELERY_OPTS
+
+  mappingUpdator:
+    enabled: true
+    image:
+      pullPolicy: Always
+    resources:
+      requests:
+        cpu: 10m
+        memory: 10Mi
+      limits:
+        cpu: 50m
+        memory: 50Mi
+
+  keycloak:
+    enabled: false
+    serverIP: ""
+    user: ""
+    password: ""
+    realm: ""
+    clientid: ""
+    clientkey: ""
+    publickey: ""
+    supportemail: ""
+    websiteurl: ""
+    defaultprofile: demo-profile
+
+  google_client_id: ""
+  google_client_secret: ""
+  google_callback_url: /portal/gauth
+
+  usage_system:
+    enabled: false
+    host: ""
+    port: 443
+    tls: false
+
+  ingest_usage_system:
+    enabled: false
+    host: ""
+    port: 443
+    tls: false
 
 sfapmui:
   service:

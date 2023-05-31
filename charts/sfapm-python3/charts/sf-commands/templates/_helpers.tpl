@@ -55,9 +55,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "sfapm.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "sfapm.fullname" .) .Values.serviceAccount.name }}
+{{- if .values.global.serviceAccount.create }}
+{{- default (include "sfapm.fullname" .) .values.global.serviceAccount.name }}
 {{- else }}
-{{- default "default" .Values.serviceAccount.name }}
+{{- default "default" .values.global.serviceAccount.name }}
 {{- end }}
 {{- end }}

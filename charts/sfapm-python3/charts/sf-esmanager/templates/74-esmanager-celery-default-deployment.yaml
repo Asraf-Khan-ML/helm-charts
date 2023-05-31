@@ -11,7 +11,7 @@ metadata:
     {{ default "snappyflow/appname" .Values.global.sfappname_key }}: {{ default .Release.Name .Values.global.sfappname }}
     {{ default "snappyflow/projectname" .Values.global.sfprojectname_key }}: {{ default .Release.Name .Values.global.sfprojectname }}
 spec:
-  replicas: {{ .Values.esmanager_celery.default.replicaCount }}
+  replicas: {{ .values.global.esmanager_celery.default.replicaCount }}
   minReadySeconds: 10
   selector:
     matchLabels:
@@ -21,7 +21,7 @@ spec:
       queue: default
   template:
     metadata:
-    {{- with .Values.podAnnotations }}
+    {{- with .values.global.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
@@ -37,7 +37,7 @@ spec:
       {{- if .Values.global.sfScheduler.enabled }}
       schedulerName: {{ .Values.global.sfScheduler.schedulerName }}
       {{- end }}
-      {{- with .Values.imagePullSecrets }}
+      {{- with .values.global.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -47,12 +47,12 @@ spec:
       initContainers:
         - name: db-ready
           image: "postgres:9.6"
-          imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
+          imagePullPolicy: {{ .values.global.postgresql.image.pullPolicy }}
           command:
             - sh 
             - -c 
             - "until pg_isready -d postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}; do sleep 3; done"
-          {{- if .Values.postgresql.enabled }}
+          {{- if .values.global.postgresql.enabled }}
           env:
             - name: DB_PASSWORD
               valueFrom:
@@ -65,7 +65,7 @@ spec:
                 name: {{ include "sfapm.fullname" . }}-esmanager
         - name: redis-ready
           image: "redis:5.0"
-          imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
+          imagePullPolicy: {{ .values.global.redis.image.pullPolicy }}
           command:
             - sh 
             - -c 
@@ -76,13 +76,13 @@ spec:
       containers:
         - name: celery
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .values.global.securityContext | nindent 12 }}
           image: "{{ .Values.esmanager.image.repository }}:{{ .Values.esmanager.image.tag }}"
           imagePullPolicy: {{ .Values.esmanager.image.pullPolicy }}
           command: ["bash", "-c"]
-          args: [{{ .Values.esmanager_celery.default.command }}]
+          args: [{{ .values.global.esmanager_celery.default.command }}]
           env:
-          {{- range $key, $value := .Values.esmanager_celery.env }}
+          {{- range $key, $value := .values.global.esmanager_celery.env }}
             - name: {{ $key }}
               value: "{{ $value }}"
           {{- end }}
@@ -98,7 +98,7 @@ spec:
             - name: ELASTIC_APM_SERVICE_NAME
               value: "sf-elasticsearch-manager-celery-default"
           {{- end }}
-          {{- if .Values.postgresql.enabled }}
+          {{- if .values.global.postgresql.enabled }}
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -120,7 +120,7 @@ spec:
             - configMapRef:
                 name: {{ include "sfapm.fullname" . }}-esmanager
           resources:
-            {{- toYaml .Values.sfapm_celery.default.resources | nindent 12 }}
+            {{- toYaml .values.global.sfapm_celery.default.resources | nindent 12 }}
           livenessProbe:
             initialDelaySeconds: 300
             periodSeconds: 180
@@ -136,53 +136,53 @@ spec:
             - mountPath: /var/log/snappyflow/elasticsearch_manager
               name: log
             {{- end }}
-        {{- if .Values.sidecarLogger.enabled }}
+        {{- if .values.global.sidecarLogger.enabled }}
         - name: audit-logger
           image:  "busybox:latest"
-          imagePullPolicy: {{ .Values.sidecarLogger.image.pullPolicy | quote }}
+          imagePullPolicy: {{ .values.global.sidecarLogger.image.pullPolicy | quote }}
           args: [/bin/sh, -c, 'tail -n+1 -F /var/log/snappyflow/elasticsearch_manager/audit.log']
           resources:
-            {{- toYaml .Values.sidecarLogger.resources | nindent 12 }}
+            {{- toYaml .values.global.sidecarLogger.resources | nindent 12 }}
           volumeMounts:
           - name: log
             mountPath: /var/log/snappyflow/elasticsearch_manager
         - name: es-cleanup-logger
           image:  "busybox:latest"
-          imagePullPolicy: {{ .Values.sidecarLogger.image.pullPolicy | quote }}
+          imagePullPolicy: {{ .values.global.sidecarLogger.image.pullPolicy | quote }}
           args: [/bin/sh, -c, 'tail -n+1 -F /var/log/snappyflow/elasticsearch_manager/es_cleanup.log']
           resources:
-            {{- toYaml .Values.sidecarLogger.resources | nindent 12 }}
+            {{- toYaml .values.global.sidecarLogger.resources | nindent 12 }}
           volumeMounts:
           - name: log
             mountPath: /var/log/snappyflow/elasticsearch_manager
         - name: application-logger
           image:  "busybox:latest"
-          imagePullPolicy: {{ .Values.sidecarLogger.image.pullPolicy | quote }}
+          imagePullPolicy: {{ .values.global.sidecarLogger.image.pullPolicy | quote }}
           args: [/bin/sh, -c, 'tail -n+1 -F -q /var/log/snappyflow/elasticsearch_manager/elasticsearch_manager.log /var/log/snappyflow/elasticsearch_manager/django.log /var/log/snappyflow/elasticsearch_manager/cloud.log']
           resources:
-            {{- toYaml .Values.sidecarLogger.resources | nindent 12 }}
+            {{- toYaml .values.global.sidecarLogger.resources | nindent 12 }}
           volumeMounts:
           - name: log
             mountPath: /var/log/snappyflow/elasticsearch_manager
         - name: cache-logger
           image:  "busybox:latest"
-          imagePullPolicy: {{ .Values.sidecarLogger.image.pullPolicy | quote }}
+          imagePullPolicy: {{ .values.global.sidecarLogger.image.pullPolicy | quote }}
           args: [/bin/sh, -c, 'tail -n+1 -F /var/log/snappyflow/elasticsearch_manager/cache.log']
           resources:
-            {{- toYaml .Values.sidecarLogger.resources | nindent 12 }}
+            {{- toYaml .values.global.sidecarLogger.resources | nindent 12 }}
           volumeMounts:
           - name: log
             mountPath: /var/log/snappyflow/elasticsearch_manager
         {{- end }}
-      {{- with .Values.nodeSelector }}
+      {{- with .values.global.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .values.global.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

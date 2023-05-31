@@ -17,7 +17,7 @@ data:
         interval: 300
         config:
           location: status
-          {{- if .Values.sfapmui.tls.enabled }}
+          {{- if .Values.global.sfapmui.tls.enabled }}
           port: 443
           secure: true
           {{- else }}

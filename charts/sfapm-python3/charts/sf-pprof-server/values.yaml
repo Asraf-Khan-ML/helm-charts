@@ -3,56 +3,9 @@ enableDebug: false
 archiverEnabled: true
 nameOverride: ""
 fullnameOverride: ""
-imagePullSecrets: []
-serviceAccount:
-  create: true
-  annotations: {}
-  name: ""
-  imagePullSecrets: []
-  automountServiceAccountToken: false
-cloud:
-  aws:
-    enable: true
-  gcs:
-    enable: false
-    use_google_service_account: true
-    service_account: XXXX-compute@developer.gserviceaccount.com OR
-      XXXX@XXXX.iam.gserviceaccount.com
-    region: us-west1
-    zone: us-west1-c
-  datacenter:
-    enable: false
 pprof:
   image:
     repository: snappyflowml/pprof-server
     pullPolicy: IfNotPresent
     tag: 'master-v1-1-9'
-  replicaCount: 1
-  resources:
-    requests:
-      cpu: 50m
-      memory: 100Mi
-    limits:
-      cpu: 1
-      memory: 512Mi
-  service:
-    type: ClusterIP
-    port: 8090
-podAnnotations:
-  prometheus.io/scrape: "false"
 podSecurityContext: {}
-global:
-  sfappname: sf-portal-app
-  sfprojectname: snappyflow-app
-  sfappname_key: snappyflow/appname
-  sfprojectname_key: snappyflow/projectname
-  nginx_geo_info_collection: true
-  nginx_ua_parsing: true
-  enable_sftrace: false
-  key: ""
-  sfNodeManager:
-    enabled: false
-    priorityClassName: sf-critical-pod
-  sfScheduler:
-    enabled: false
-    schedulerName: sf-scheduler

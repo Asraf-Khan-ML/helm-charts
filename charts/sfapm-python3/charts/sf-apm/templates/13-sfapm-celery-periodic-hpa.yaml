@@ -1,4 +1,4 @@
-{{- if .Values.sfapm_celery.periodic.autoscaling.enabled }}
+{{- if .Values.global.sfapm_celery.periodic.autoscaling.enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
@@ -10,19 +10,19 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ include "sfapm.fullname" . }}-apm-celery-periodic
-  minReplicas: {{ .Values.sfapm_celery.periodic.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.sfapm_celery.periodic.autoscaling.maxReplicas }}
+  minReplicas: {{ .Values.global.sfapm_celery.periodic.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.global.sfapm_celery.periodic.autoscaling.maxReplicas }}
   metrics:
-  {{- if .Values.sfapm_celery.periodic.autoscaling.targetCPUUtilizationPercentage }}
+  {{- if .Values.global.sfapm_celery.periodic.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: {{ .Values.sfapm_celery.periodic.autoscaling.targetCPUUtilizationPercentage }}
+        targetAverageUtilization: {{ .Values.global.sfapm_celery.periodic.autoscaling.targetCPUUtilizationPercentage }}
   {{- end }}
-  {{- if .Values.sfapm_celery.periodic.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- if .Values.global.sfapm_celery.periodic.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: {{ .Values.sfapm_celery.periodic.autoscaling.targetMemoryUtilizationPercentage }}
+        targetAverageUtilization: {{ .Values.global.sfapm_celery.periodic.autoscaling.targetMemoryUtilizationPercentage }}
   {{- end }}
 {{- end }}

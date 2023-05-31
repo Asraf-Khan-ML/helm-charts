@@ -11,7 +11,7 @@ metadata:
     {{ default "snappyflow/appname" .Values.global.sfappname_key }}: {{ default .Release.Name .Values.global.sfappname }}
     {{ default "snappyflow/projectname" .Values.global.sfprojectname_key }}: {{ default .Release.Name .Values.global.sfprojectname }}
 spec:
-  replicas: {{ .Values.sfapm_celery.provision.replicaCount }}
+  replicas: {{ .Values.global.sfapm_celery.provision.replicaCount }}
   minReadySeconds: 10
   selector:
     matchLabels:
@@ -21,7 +21,7 @@ spec:
       queue: provision
   template:
     metadata:
-    {{- with .Values.podAnnotations }}
+    {{- with .Values.global.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
@@ -37,7 +37,7 @@ spec:
       {{- if .Values.global.sfScheduler.enabled }}
       schedulerName: {{ .Values.global.sfScheduler.schedulerName }}
       {{- end }}
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -47,12 +47,12 @@ spec:
       initContainers:
         - name: db-ready
           image: "postgres:9.6"
-          imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.global.postgresql.image.pullPolicy }}
           command:
             - sh 
             - -c 
             - "until pg_isready -d postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}; do sleep 3; done"
-          {{- if .Values.postgresql.enabled }}
+          {{- if .Values.global.postgresql.enabled }}
           env:
             - name: DB_PASSWORD
               valueFrom:
@@ -65,7 +65,7 @@ spec:
                 name: {{ include "sfapm.fullname" . }}-apm
         - name: redis-ready
           image: "redis:5.0"
-          imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.global.redis.image.pullPolicy }}
           command:
             - sh 
             - -c 
@@ -76,13 +76,13 @@ spec:
       containers:
         - name: celery
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .Values.global.securityContext | nindent 12 }}
           image: "{{ .Values.sfapm.image.repository }}:{{ .Values.sfapm.image.tag }}"
           imagePullPolicy: {{ .Values.sfapm.image.pullPolicy }}
           command: ["bash", "-c"]
-          args: [{{ .Values.sfapm_celery.provision.command }}]
+          args: [{{ .Values.global.sfapm_celery.provision.command }}]
           env:
-          {{- range $key, $value := .Values.sfapm_celery.env }}
+          {{- range $key, $value := .Values.global.sfapm_celery.env }}
             - name: {{ $key }}
               value: "{{ $value }}"
           {{- end }}
@@ -98,7 +98,7 @@ spec:
             - name: ELASTIC_APM_SERVICE_NAME
               value: "sfapm-celery-provision"
           {{- end }}
-          {{- if .Values.postgresql.enabled }}
+          {{- if .Values.global.postgresql.enabled }}
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -120,7 +120,7 @@ spec:
             - configMapRef:
                 name: {{ include "sfapm.fullname" . }}-apm
           resources:
-            {{- toYaml .Values.sfapm_celery.provision.resources | nindent 12 }}
+            {{- toYaml .Values.global.sfapm_celery.provision.resources | nindent 12 }}
           livenessProbe:
             initialDelaySeconds: 300
             periodSeconds: 180
@@ -134,15 +134,15 @@ spec:
             - mountPath: /sfagent
               name: sftrace-agent
             {{- end }}
-      {{- with .Values.nodeSelector }}
+      {{- with .Values.global.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.global.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

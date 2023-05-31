@@ -1,4 +1,4 @@
-{{- if .Values.sfapm.autoscaling.enabled }}
+{{- if .values.global.sfapm.autoscaling.enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
@@ -10,19 +10,19 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ include "sfapm.fullname" . }}-commands
-  minReplicas: {{ .Values.commands.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.commands.autoscaling.maxReplicas }}
+  minReplicas: {{ .values.global.commands.autoscaling.minReplicas }}
+  maxReplicas: {{ .values.global.commands.autoscaling.maxReplicas }}
   metrics:
-  {{- if .Values.commands.autoscaling.targetCPUUtilizationPercentage }}
+  {{- if .values.global.commands.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: {{ .Values.commands.autoscaling.targetCPUUtilizationPercentage }}
+        targetAverageUtilization: {{ .values.global.commands.autoscaling.targetCPUUtilizationPercentage }}
   {{- end }}
-  {{- if .Values.commands.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- if .values.global.commands.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: {{ .Values.commands.autoscaling.targetMemoryUtilizationPercentage }}
+        targetAverageUtilization: {{ .values.global.commands.autoscaling.targetMemoryUtilizationPercentage }}
   {{- end }}
 {{- end }}
