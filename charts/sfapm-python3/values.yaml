@@ -152,7 +152,7 @@ global:
 
   redis:
     image:
-      pullPolicy: IfNotPres1ent
+      pullPolicy: IfNotPresent
 
   serviceAccount:
     create: true
