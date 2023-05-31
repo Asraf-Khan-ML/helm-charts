@@ -158,8 +158,7 @@ global:
     create: true
     annotations: {}
     name: ""
-    imagePullSecrets:
-    - name: xxx
+    imagePullSecrets: []
     automountServiceAccountToken: false
 
   podAnnotations:
