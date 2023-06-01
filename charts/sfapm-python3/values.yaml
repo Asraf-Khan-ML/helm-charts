@@ -508,10 +508,3 @@ global:
     host: ""
     port: 443
     tls: false
-
-sfapmui:
-  service:
-    type: NodePort # this is the entrypoint change to Loadbalancer
-    nodePort: 30080
-
-
