@@ -16,15 +16,3 @@ vizbuilder_celery:
         repository: snappyflowml/celery-alert-prometheus-exporter
         tag: 'v1-1-17'
         pullPolicy: Always
-pprof:
-  service:
-    type: ClusterIP
-    port: 8090
-sfapm:
-  service:
-    type: ClusterIP
-    port: 8000
-esmanager:
-  service:
-    type: ClusterIP
-    port: 8000

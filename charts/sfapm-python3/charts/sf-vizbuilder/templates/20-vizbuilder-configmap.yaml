@@ -33,10 +33,10 @@ data:
     REDIS_PORT: "6379"
 
     APM_HOST: {{ include "sfapm.fullname" . }}-apm
-    APM_PORT: "{{ .Values.sfapm.service.port }}"
+    APM_PORT: "{{ .Values.global.sfapm.service.port }}"
 
     PPROF_SERVER_HOST: "{{ include "sfapm.fullname" . }}-pprof-server"
-    PPROF_SERVER_PORT: "{{ .Values.pprof.service.port }}"
+    PPROF_SERVER_PORT: "{{ .Values.global.pprof.service.port }}"
 
     ES_MANAGER_HOST: {{ include "sfapm.fullname" . }}-esmanager
-    ES_MANAGER_PORT: "{{ .Values.esmanager.service.port }}"
+    ES_MANAGER_PORT: "{{ .Values.global.esmanager.service.port }}"
