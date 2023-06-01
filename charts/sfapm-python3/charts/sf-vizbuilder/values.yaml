@@ -7,6 +7,7 @@ vizbuilder:
   image:
     repository: snappyflowml/sfapm-vizbuilder
     tag: '4.0.220-python3'
+    pullPolicy: IfNotPresent
 
 vizbuilder_celery:
   alert:
