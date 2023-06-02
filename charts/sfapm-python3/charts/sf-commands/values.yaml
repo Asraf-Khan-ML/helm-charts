@@ -6,7 +6,7 @@ disable_server_side_cursors: false
 commands:
   image:
     repository: snappyflowml/sfapm-commands
-    tag: 'master-v1-1-10'
+    tag: 'master-0-0-1'
     pullPolicy: IfNotPresent
 sfapmaffinity:
   podAntiAffinity:
