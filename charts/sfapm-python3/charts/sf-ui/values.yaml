@@ -9,6 +9,6 @@ podSecurityContext:
 sfapmui:
   image:
     repository: snappyflowml/sfapm-ui
-    tag: 'master-v1-1-10'
+    tag: 'master-0-0-1'
     pullPolicy: IfNotPresent
 
