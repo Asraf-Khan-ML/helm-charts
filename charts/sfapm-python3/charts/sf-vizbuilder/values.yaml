@@ -6,7 +6,7 @@ fullnameOverride: ""
 vizbuilder:
   image:
     repository: snappyflowml/sfapm-vizbuilder
-    tag: '4.0.219-python3'
+    tag: '4.0.699-python3-master'
     pullPolicy: IfNotPresent
 
 vizbuilder_celery:
