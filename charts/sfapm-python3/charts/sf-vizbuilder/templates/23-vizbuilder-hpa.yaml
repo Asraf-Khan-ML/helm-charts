@@ -1,4 +1,4 @@
-{{- if .Values.vizbuilder.autoscaling.enabled }}
+{{- if .Values.global.vizbuilder.autoscaling.enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
@@ -10,19 +10,19 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ include "sfapm.fullname" . }}-vizbuilder
-  minReplicas: {{ .Values.vizbuilder.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.vizbuilder.autoscaling.maxReplicas }}
+  minReplicas: {{ .Values.global.vizbuilder.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.global.vizbuilder.autoscaling.maxReplicas }}
   metrics:
-  {{- if .Values.vizbuilder.autoscaling.targetCPUUtilizationPercentage }}
+  {{- if .Values.global.vizbuilder.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: {{ .Values.vizbuilder.autoscaling.targetCPUUtilizationPercentage }}
+        targetAverageUtilization: {{ .Values.global.vizbuilder.autoscaling.targetCPUUtilizationPercentage }}
   {{- end }}
-  {{- if .Values.vizbuilder.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- if .Values.global.vizbuilder.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: {{ .Values.vizbuilder.autoscaling.targetMemoryUtilizationPercentage }}
+        targetAverageUtilization: {{ .Values.global.vizbuilder.autoscaling.targetMemoryUtilizationPercentage }}
   {{- end }}
 {{- end }}

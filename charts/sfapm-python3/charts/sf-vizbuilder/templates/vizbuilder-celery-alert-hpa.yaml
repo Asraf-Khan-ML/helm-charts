@@ -1,4 +1,4 @@
-{{- if .Values.vizbuilder_celery.alert.autoscaling.enabled -}}
+{{- if .Values.global.vizbuilder_celery.alert.autoscaling.enabled -}}
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -15,16 +15,16 @@ spec:
       stabilizationWindowSeconds: 30
       policies:
       - type: Pods
-        periodSeconds: {{ .Values.vizbuilder_celery.alert.autoscaling.scaleDownPeriod }}
+        periodSeconds: {{ .Values.global.vizbuilder_celery.alert.autoscaling.scaleDownPeriod }}
         value: 1
     scaleUp:
       stabilizationWindowSeconds: 30
       policies:
       - type: Pods
-        periodSeconds: {{ .Values.vizbuilder_celery.alert.autoscaling.scaleUpPeriod }}
+        periodSeconds: {{ .Values.global.vizbuilder_celery.alert.autoscaling.scaleUpPeriod }}
         value: 1
-  minReplicas: {{ .Values.vizbuilder_celery.alert.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.vizbuilder_celery.alert.autoscaling.maxReplicas }}
+  minReplicas: {{ .Values.global.vizbuilder_celery.alert.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.global.vizbuilder_celery.alert.autoscaling.maxReplicas }}
   metrics:
   - type: Pods
     pods:
@@ -32,5 +32,5 @@ spec:
         name: num_executing_tasks
       target:
         type: AverageValue
-        averageValue: {{ div .Values.vizbuilder_celery.env.MAXIMUM_RUNNING_TASKS 2 }}
+        averageValue: {{ div .Values.global.vizbuilder_celery.env.MAXIMUM_RUNNING_TASKS 2 }}
 {{- end }}

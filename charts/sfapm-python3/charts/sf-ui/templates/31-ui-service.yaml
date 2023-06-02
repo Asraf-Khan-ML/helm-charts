@@ -9,14 +9,14 @@ metadata:
     {{ default "snappyflow/appname" .Values.global.sfappname_key }}: {{ default .Release.Name .Values.global.sfappname }}
     {{ default "snappyflow/projectname" .Values.global.sfprojectname_key }}: {{ default .Release.Name .Values.global.sfprojectname }}
 spec:
-  type: {{ .Values.sfapmui.service.type }}
+  type: {{ .Values.global.sfapmui.service.type }}
   externalTrafficPolicy: Local
   ports:
-    {{- if .Values.sfapmui.tls.enabled }}
+    {{- if .Values.global.sfapmui.tls.enabled }}
     - targetPort: https
       protocol: TCP
       name: https
-      nodePort: {{ .Values.sfapmui.service.nodePort }}
+      nodePort: {{ .Values.global.sfapmui.service.nodePort }}
       port: 443
     {{- end }}
     - targetPort: http
