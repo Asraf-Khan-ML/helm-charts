@@ -25,3 +25,6 @@ dependencies:
   version: 8.0.11
   repository: file://./sub_charts/minio
   condition: global.secrets.gcs.enable
+- name: sftrace
+  version: 4.0.397
+  repository: file://./sub_charts/sftrace
