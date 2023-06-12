@@ -14,7 +14,7 @@ spec:
     - port: {{ .Values.sftrace.service.port }}
       targetPort: http
       protocol: TCP
-      nodePort: 32200
+      nodePort: 32201
       name: http
   selector:
     {{- include "sfapm.selectorLabels" . | nindent 4 }}

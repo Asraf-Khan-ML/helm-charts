@@ -13,7 +13,7 @@ spec:
     - port: {{ .Values.sftrace.service.jaegerport }}
       targetPort: 14268
       protocol: TCP
-      nodePort: 32268
+      nodePort: 32269
       name: http
   selector:
     app: sftrace
