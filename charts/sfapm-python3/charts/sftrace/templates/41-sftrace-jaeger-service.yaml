@@ -8,9 +8,9 @@ metadata:
     {{ default "snappyflow/appname" .Values.global.sfappname_key }}: {{ default .Release.Name .Values.global.sfappname }}
     {{ default "snappyflow/projectname" .Values.global.sfprojectname_key }}: {{ default .Release.Name .Values.global.sfprojectname }}
 spec:
-  type: {{ .Values.sftrace.service.type }}
+  type: {{ .Values.global.sftrace.service.type }}
   ports:
-    - port: {{ .Values.sftrace.service.jaegerport }}
+    - port: {{ .Values.global.sftrace.service.jaegerport }}
       targetPort: 14268
       protocol: TCP
       nodePort: 32268

@@ -9,9 +9,9 @@ metadata:
     {{ default "snappyflow/projectname" .Values.global.sfprojectname_key }}: {{ default .Release.Name .Values.global.sfprojectname }}
     role: sftrace-server
 spec:
-  type: {{ .Values.sftrace.service.type }}
+  type: {{ .Values.global.sftrace.service.type }}
   ports:
-    - port: {{ .Values.sftrace.service.port }}
+    - port: {{ .Values.global.sftrace.service.port }}
       targetPort: http
       protocol: TCP
       nodePort: 32200
