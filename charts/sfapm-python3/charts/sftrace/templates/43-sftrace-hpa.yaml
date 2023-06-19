@@ -15,7 +15,7 @@ spec:
       stabilizationWindowSeconds: 5
       policies:
       - type: Pods
-        periodSeconds: {{ .Values.global.sftraceautoscaling.scaleDownPeriod }}
+        periodSeconds: {{ .Values.global.sftrace.autoscaling.scaleDownPeriod }}
         value: 1
     scaleUp:
       stabilizationWindowSeconds: 5
