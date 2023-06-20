@@ -508,3 +508,61 @@ global:
     host: ""
     port: 443
     tls: false
+
+  sftrace:
+    replicaCount: 2
+
+    terminationGracePeriodSeconds: 30
+
+    maximumQueueEvents: 40000
+
+    # Helm values for sftrace-server-prometheus-exporter container
+    sftraceServerPrometheusExporter:
+      metricsInterval: 3
+      image:
+        pullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 200Mi
+
+    podAnnotations:
+      prometheus.io/path: /metrics
+      prometheus.io/port: "2112"
+      prometheus.io/scrape: "true"
+
+    image:
+      pullPolicy: Always
+    
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
+      limits:
+        cpu: 1
+        memory: 2Gi
+
+    service:
+      type: NodePort
+      port: 8200
+      jaegerport: 14268
+
+    output:
+      # Enable either Kafka or Kafkarest as output plugin for trace server
+      kafka:
+        enabled: true
+        # List of Kafka brokers
+        hosts: ["kafka-cp-kafka-headless.kafka:9092"]
+      kafkarest:
+        enabled: false
+        host: "sf-datapath-cp-kafka-rest-external.kafka"
+        port: 8082
+        token: " "
+
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 5
+      # This value is calculated as 50 % of max events trace queue can buffer 
+      scaleUpPeriod: 5
+      scaleDownPeriod: 120
