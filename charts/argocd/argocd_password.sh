@@ -29,7 +29,7 @@ send "y\r"
 expect "Username:"
 send "admin\r"
 expect "Password:"
-send "$argocdpassword\r"
+send -- "$argocdpassword\r"
 expect "*successfully"
 interact
 EOF
@@ -40,7 +40,7 @@ EOF
   /usr/bin/expect <(cat << EOF
 spawn argocd account update-password
 expect "*(admin):"
-send "$argocdpassword\r"
+send -- "$argocdpassword\r"
 expect "*user admin:"
 send "admin@123\r"
 expect "*user admin:"
