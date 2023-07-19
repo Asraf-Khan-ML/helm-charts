@@ -64,3 +64,6 @@ expect "*successfully"
 interact
 EOF
 )
+
+  rm -rf test
+  sleep 10 
