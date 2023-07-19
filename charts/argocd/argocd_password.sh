@@ -49,3 +49,18 @@ expect "Password updated"
 interact
 EOF
 )
+
+  ###Interactive session for ArgoCD login CLI
+  echo "Interactive session for ArgoCD login CLI"
+  /usr/bin/expect <(cat << EOF
+spawn argocd login $argocdserver
+expect "WARNING:*"
+send "y\r"
+expect "Username:"
+send "admin\r"
+expect "Password:"
+send "admin@123\r"
+expect "*successfully"
+interact
+EOF
+)
