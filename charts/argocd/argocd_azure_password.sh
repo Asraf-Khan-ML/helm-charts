@@ -34,6 +34,7 @@ interact
 EOF
 )
 
+  sleep 20
   ###Interactive session for updating ArgoCD password
   echo "Interactive session for updating ArgoCD password"
   /usr/bin/expect <(sudo cat << EOF
@@ -49,6 +50,7 @@ interact
 EOF
 )
 
+  sleep 20
   ###Interactive session for ArgoCD login CLI
   echo "Interactive session for ArgoCD login CLI"
   /usr/bin/expect <(sudo cat << EOF
