@@ -1,3 +1,5 @@
+#!/bin/bash -x
+
   ###Update ArgoCD service with LoadBalancer
   kubectl patch svc argocd-server -n argocd -p '{"spec":{"type":"LoadBalancer"}}'
   sleep 180 
