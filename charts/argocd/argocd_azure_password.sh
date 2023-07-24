@@ -8,7 +8,7 @@ export PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/aws/bin:/home
   ###Package required for interactive session for argocd login
   echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
   sudo apt update -y
-	sudo apt-get -y install coreutils expect
+  sudo apt-get -y install coreutils expect
   
   ###Installation of ArgoCD cli
   curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
