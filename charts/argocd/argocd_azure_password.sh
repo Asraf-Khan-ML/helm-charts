@@ -5,6 +5,7 @@
   sleep 180 
 
   ###Package required for interactive session for argocd login
+  echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
   sudo apt-get -y install expect
   
   ###Installation of ArgoCD cli
