@@ -38,7 +38,7 @@ EOF
   sleep 10
   ###Interactive session for updating ArgoCD password
   echo "CLI to update ArgoCD password"
-  argocd account update-password --current-password $argocdpassword --new-password admin@123 --server $argocdserver
+  argocd account update-password --current-password $argocdpassword --new-password admin@123 --server $argocdserver --insecure
 
   sleep 10
   ###Interactive session for ArgoCD login CLI
