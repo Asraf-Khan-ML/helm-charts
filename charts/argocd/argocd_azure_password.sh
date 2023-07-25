@@ -35,33 +35,18 @@ interact
 EOF
 )
 
-  sleep 20
+  sleep 10
   ###Interactive session for updating ArgoCD password
-  echo "Interactive session for updating ArgoCD password"
-  /usr/bin/expect <(sudo cat << EOF
-spawn argocd account update-password
-expect "*(admin):"
-send -- "$argocdpassword\r"
-expect "*user admin:"
-send "admin@123\r"
-expect "*user admin:"
-send "admin@123\r"   
-expect "Password updated"
-interact
-EOF
-)
+  echo "CLI to update ArgoCD password"
+  argocd account update-password --current-password $argocdpassword --new-password admin@123
 
-  sleep 20
+  sleep 10
   ###Interactive session for ArgoCD login CLI
-  echo "Interactive session for ArgoCD login CLI with new password"
+  echo "Session for ArgoCD login CLI with new password"
   /usr/bin/expect <(sudo cat << EOF
-spawn argocd login $argocdserver
+spawn argocd login $argocdserver --username admin --password admin@123
 expect "WARNING:*"
 send "y\r"
-expect "Username:"
-send "admin\r"
-expect "Password:"
-send "admin@123\r"
 expect "*successfully"
 interact
 EOF
