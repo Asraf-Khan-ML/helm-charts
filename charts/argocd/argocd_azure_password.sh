@@ -1,8 +1,8 @@
 #!/bin/bash -x
+export PATH=/opt/microsoft/powershell/7:~/.local/bin:~/bin:~/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/istio-latest/bin:/usr/local/linkerd/bin:/usr/lib/golang/bin:/opt/mssql-tools18/bin:~/bundle/bin:~/bundle/gems/bin:/home/asraf/.local/share/powershell/Scripts
 
   ###Update ArgoCD service with LoadBalancer
   kubectl patch svc argocd-server -n argocd -p '{"spec":{"type":"LoadBalancer"}}'
-  sleep 180 
 
   ###Package required for interactive session for argocd login
   echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
@@ -53,7 +53,7 @@ EOF
 
   sleep 20
   ###Interactive session for ArgoCD login CLI
-  echo "Interactive session for ArgoCD login CLI"
+  echo "Interactive session for ArgoCD login CLI with new password"
   /usr/bin/expect <(sudo cat << EOF
 spawn argocd login $argocdserver
 expect "WARNING:*"
