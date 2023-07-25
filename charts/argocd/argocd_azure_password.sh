@@ -21,19 +21,8 @@ export PATH=/opt/microsoft/powershell/7:~/.local/bin:~/bin:~/.dotnet/tools:/usr/
   argocdpassword=$(sudo cat test | awk NR==1)
 
   ###Interactive session for ArgoCD login CLI
-  echo "Interactive session for ArgoCD login CLI"
-  /usr/bin/expect <(sudo cat << EOF
-spawn argocd login $argocdserver
-expect "WARNING:*"
-send "y\r"
-expect "Username:"
-send "admin\r"
-expect "Password:"
-send -- "$argocdpassword\r"
-expect "*successfully"
-interact
-EOF
-)
+  echo "Session for ArgoCD login CLI"
+  argocd login $argocdserver --username admin --password $argocdpassword --insecure
 
   sleep 10
   ###Interactive session for updating ArgoCD password
@@ -43,14 +32,8 @@ EOF
   sleep 10
   ###Interactive session for ArgoCD login CLI
   echo "Session for ArgoCD login CLI with new password"
-  /usr/bin/expect <(sudo cat << EOF
-spawn argocd login $argocdserver --username admin --password admin@123
-expect "WARNING:*"
-send "y\r"
-expect "*successfully"
-interact
-EOF
-)
+  argocd login $argocdserver --username admin --password admin@123 --insecure
 
-  sudo rm -rf test
   sleep 10
+  sudo rm -rf test
+  
