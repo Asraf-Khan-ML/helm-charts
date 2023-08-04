@@ -10,7 +10,7 @@ sfapmui:
   image:
     brand: ""
     repository: snappyflowml/sfapm-ui
-    tag: 'master-1-1-5'
+    tag: 'master-1-1-7'
     tag_esds: 'master-1-1-5'
     tag_goals101: ''
     tag_visa: ''
